@@ -79,7 +79,14 @@ class TunPeer(object):
                 break
 
 
+def sigint_handler(sig_num, frame):
+    print('\nExiting...')
+    sys.exit(0)
+
+
 def main():
+    signal.signal(signal.SIGINT, sigint_handler)
+
     parser = optparse.OptionParser()
     parser.add_option('-i', dest='interface', default=config.INTERFACE, help='TUN interface to use [%default]')
     parser.add_option('-a', dest='laddr', default='0.0.0.0', help='local address [%default]')
@@ -97,11 +104,6 @@ def main():
 
     return 0
 
-def sigint_handler(sig_num, frame):
-    print('\nExiting...')
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, sigint_handler)
 
 if __name__ == '__main__':
     sys.exit(main())
