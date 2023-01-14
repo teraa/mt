@@ -21,6 +21,12 @@ class TunPeer(object):
         self._rport = rport
         print(f'Remote host: {raddr}:{rport}')
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._sock.close()
+
     def run(self):
         r = [self._tun, self._sock]
         w = []
@@ -86,13 +92,9 @@ def main():
         parser.print_help()
         return 1
 
-    try:
-        server = TunPeer(opt.interface, opt.laddr, opt.lport, opt.raddr, opt.rport)
-    except (pytun.Error, socket.error) as e:
-        print(str(e), file=sys.stderr)
-        return 1
+    with TunPeer(opt.interface, opt.laddr, opt.lport, opt.raddr, opt.rport) as peer:
+        peer.run();
 
-    server.run()
     return 0
 
 def sigint_handler(sig_num, frame):
