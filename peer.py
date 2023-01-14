@@ -1,3 +1,4 @@
+import signal
 import sys
 import optparse
 import socket
@@ -94,6 +95,11 @@ def main():
     server.run()
     return 0
 
+def sigint_handler(sig_num, frame):
+    print('\nExiting...')
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, sigint_handler)
 
 if __name__ == '__main__':
     sys.exit(main())
