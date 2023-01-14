@@ -93,7 +93,7 @@ def main():
         return 1
 
     with TunPeer(opt.interface, opt.laddr, opt.lport, opt.raddr, opt.rport) as peer:
-        peer.run();
+        peer.run()
 
     return 0
 
