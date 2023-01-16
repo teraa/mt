@@ -3,12 +3,12 @@ import queue
 import sys
 import optparse
 import socket
-import select
 import errno
 import threading
 import pytun
 import config
 import sighandler
+
 
 class TransportClient():
     def reader(self, queue: queue.Queue):
@@ -16,6 +16,7 @@ class TransportClient():
 
     def writer(self, queue: queue.Queue):
         pass
+
 
 class UdpClient(TransportClient):
     def __init__(self, laddr: str, lport: int, raddr: str, rport: int) -> None:
@@ -132,7 +133,8 @@ class TunPeer(object):
 
 def main():
     sighandler.register()
-    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(funcName)s: %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
+    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(funcName)s: %(message)s',
+                        level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
     parser.add_option('-i', dest='interface', default=config.INTERFACE, help='TUN interface to use [%default]')
@@ -145,7 +147,7 @@ def main():
     if not opt.raddr:
         parser.print_help()
         return 1
-    
+
     with UdpClient(opt.laddr, opt.lport, opt.raddr, opt.rport) as client:
         peer = TunPeer(opt.interface, client)
         peer.run()
