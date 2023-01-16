@@ -13,6 +13,11 @@ class TunPeer(object):
 
     def __init__(self, interface, laddr, lport, raddr, rport):
         self._tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
+        self._tun.addr = config.TUN_ADDRESS
+        self._tun.netmask = config.TUN_NETMASK
+        self._tun.mtu = 1500
+        self._tun.persist(True)
+        self._tun.up()
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind((laddr, lport))
