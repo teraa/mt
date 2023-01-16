@@ -5,7 +5,7 @@ q = asyncio.Queue()
 
 
 async def producer():
-    print('Producer enter')
+    print(f'Producer {q=}')
 
     n = 0
     while True:
@@ -16,7 +16,7 @@ async def producer():
 
 
 async def consumer():
-    print('Consumer enter')
+    print(f'Consumer {q=}')
 
     while True:
         n = await q.get()
