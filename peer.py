@@ -1,3 +1,4 @@
+import logging
 import queue
 import sys
 import optparse
@@ -8,14 +9,6 @@ import threading
 import pytun
 import config
 import sighandler
-
-debug_lock = threading.Lock()
-
-
-def debug(message: str):
-    debug_lock.acquire()
-    print(message, file=sys.stderr)
-    debug_lock.release()
 
 class TransportClient():
     def reader(self, queue: queue.Queue):
@@ -41,14 +34,14 @@ class UdpClient(TransportClient):
         self._sock.close()
 
     def reader(self, queue: queue.Queue):
-        debug('SR')
+        logging.debug('Start')
         while True:
             try:
                 data, addr = self._sock.recvfrom(65535)
-                debug(f'SR: {len(data)} bytes')
+                logging.debug(f'{len(data)} bytes')
 
                 if addr[0] != self._raddr or addr[1] != self._rport:
-                    debug(f'Drop packet from {addr}')
+                    logging.debug(f'Drop packet from {addr}')
                     continue
 
                 queue.put(data)
@@ -58,12 +51,12 @@ class UdpClient(TransportClient):
                     continue
 
     def writer(self, queue: queue.Queue):
-        debug('SW')
+        logging.debug('Start')
         while True:
             try:
                 data = queue.get()
                 self._sock.sendto(data, (self._raddr, self._rport))
-                debug(f'SW: {len(data)} bytes')
+                logging.debug(f'{len(data)} bytes')
                 queue.task_done()
 
             except socket.error as e:
@@ -93,11 +86,11 @@ class TunPeer(object):
         self._client.writer(self._write_queue)
 
     def tun_reader(self):
-        debug('TR')
+        logging.debug('Start')
         while True:
             try:
                 data = self._tun.read(self._tun.mtu)
-                debug(f'TR: {len(data)} bytes')
+                logging.debug(f'{len(data)} bytes')
 
                 self._write_queue.put(data)
 
@@ -106,12 +99,12 @@ class TunPeer(object):
                     continue
 
     def tun_writer(self):
-        debug('TW')
+        logging.debug('Start')
         while True:
             try:
                 data = self._read_queue.get()
                 self._tun.write(data)
-                debug(f'TW: {len(data)} bytes')
+                logging.debug(f'{len(data)} bytes')
                 self._read_queue.task_done()
 
             except pytun.Error as e:
@@ -139,6 +132,7 @@ class TunPeer(object):
 
 def main():
     sighandler.register()
+    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(funcName)s: %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
     parser.add_option('-i', dest='interface', default=config.INTERFACE, help='TUN interface to use [%default]')
