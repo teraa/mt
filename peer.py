@@ -6,6 +6,7 @@ import select
 import errno
 import pytun
 import config
+import sighandler
 
 
 class TunPeer(object):
@@ -79,13 +80,8 @@ class TunPeer(object):
                 break
 
 
-def sigint_handler(sig_num, frame):
-    print('\nExiting...')
-    sys.exit(0)
-
-
 def main():
-    signal.signal(signal.SIGINT, sigint_handler)
+    sighandler.register()
 
     parser = optparse.OptionParser()
     parser.add_option('-i', dest='interface', default=config.INTERFACE, help='TUN interface to use [%default]')
