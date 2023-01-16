@@ -17,8 +17,14 @@ def debug(message):
     print(message, file=sys.stderr)
     debug_lock.release()
 
+class TransportClient():
+    def reader(self, queue: queue.Queue):
+        pass
 
-class UdpClient():
+    def writer(self, queue: queue.Queue):
+        pass
+
+class UdpClient(TransportClient):
     def __init__(self, laddr: str, lport: int, raddr: str, rport: int) -> None:
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind((laddr, lport))
@@ -67,7 +73,7 @@ class UdpClient():
 
 class TunPeer(object):
 
-    def __init__(self, interface, laddr, lport, raddr, rport):
+    def __init__(self, interface: str, client: TransportClient):
         self._tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         self._tun.addr = config.TUN_ADDRESS
         self._tun.netmask = config.TUN_NETMASK
@@ -78,13 +84,7 @@ class TunPeer(object):
         self._read_queue = queue.Queue()
         self._write_queue = queue.Queue()
 
-        self._client = UdpClient(laddr, lport, raddr, rport)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self._sock.close()
+        self._client = client
 
     def client_reader(self):
         self._client.reader(self._read_queue)
@@ -151,8 +151,9 @@ def main():
     if not opt.raddr:
         parser.print_help()
         return 1
-
-    with TunPeer(opt.interface, opt.laddr, opt.lport, opt.raddr, opt.rport) as peer:
+    
+    with UdpClient(opt.laddr, opt.lport, opt.raddr, opt.rport) as client:
+        peer = TunPeer(opt.interface, client)
         peer.run()
 
     return 0
