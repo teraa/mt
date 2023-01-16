@@ -1,12 +1,21 @@
-import signal
+import queue
 import sys
 import optparse
 import socket
 import select
 import errno
+import threading
 import pytun
 import config
 import sighandler
+
+debug_lock = threading.Lock()
+
+
+def debug(message):
+    debug_lock.acquire()
+    print(message, file=sys.stderr)
+    debug_lock.release()
 
 
 class TunPeer(object):
@@ -27,62 +36,88 @@ class TunPeer(object):
         self._rport = rport
         print(f'Remote host: {raddr}:{rport}')
 
+        self._read_queue = queue.Queue()
+        self._write_queue = queue.Queue()
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._sock.close()
 
-    def run(self):
-        r = [self._tun, self._sock]
-        w = []
-        x = []
-        tq = ''
-        sq = ''
-
+    def socket_reader(self):
+        debug('SR')
         while True:
             try:
-                r, w, x = select.select(r, w, x)
+                data, addr = self._sock.recvfrom(65535)
+                debug(f'SR: {len(data)} bytes')
 
-                if self._tun in r:
-                    sq = self._tun.read(self._tun.mtu)
-                    print(f'TR: {len(sq)} bytes', file=sys.stderr)
+                if addr[0] != self._raddr or addr[1] != self._rport:
+                    debug(f'Drop packet from {addr}')
+                    continue
 
-                if self._sock in r:
-                    tq, addr = self._sock.recvfrom(65535)
-                    print(f'SR: {len(tq)} bytes', file=sys.stderr)
-                    if addr[0] != self._raddr or addr[1] != self._rport:
-                        tq = ''  # drop packet
-                        print(f'Drop packet from {addr}', file=sys.stderr)
+                self._read_queue.put(data)
 
-                if self._tun in w:
-                    self._tun.write(tq)
-                    print(f'TW: {len(tq)} bytes', file=sys.stderr)
-                    tq = ''
-
-                if self._sock in w:
-                    self._sock.sendto(sq, (self._raddr, self._rport))
-                    print(f'SW: {len(sq)} bytes', file=sys.stderr)
-                    sq = ''
-
-                r = []
-                w = []
-
-                if tq:
-                    w.append(self._tun)
-                else:
-                    r.append(self._sock)
-
-                if sq:
-                    w.append(self._sock)
-                else:
-                    r.append(self._tun)
-
-            except (select.error, socket.error, pytun.Error) as e:
+            except socket.error as e:
                 if e[0] == errno.EINTR:
                     continue
-                print(str(e), file=sys.stderr)
-                break
+
+    def socket_writer(self):
+        debug('SW')
+        while True:
+            try:
+                data = self._write_queue.get()
+                self._sock.sendto(data, (self._raddr, self._rport))
+                debug(f'SW: {len(data)} bytes')
+                self._write_queue.task_done()
+
+            except socket.error as e:
+                if e[0] == errno.EINTR:
+                    continue
+
+    def tun_reader(self):
+        debug('TR')
+        while True:
+            try:
+                data = self._tun.read(self._tun.mtu)
+                debug(f'TR: {len(data)} bytes')
+
+                self._write_queue.put(data)
+
+            except pytun.Error as e:
+                if e[0] == errno.EINTR:
+                    continue
+
+    def tun_writer(self):
+        debug('TW')
+        while True:
+            try:
+                data = self._read_queue.get()
+                self._tun.write(data)
+                debug(f'TW: {len(data)} bytes')
+                self._read_queue.task_done()
+
+            except pytun.Error as e:
+                if e[0] == errno.EINTR:
+                    continue
+
+    def run(self):
+
+        threads = []
+        funcs = [
+            self.socket_reader,
+            self.socket_writer,
+            self.tun_reader,
+            self.tun_writer
+        ]
+
+        for f in funcs:
+            t = threading.Thread(target=f, daemon=True)
+            t.start()
+            threads.append(t)
+
+        for t in threads:
+            t.join()
 
 
 def main():
