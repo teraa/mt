@@ -12,7 +12,7 @@ import sighandler
 debug_lock = threading.Lock()
 
 
-def debug(message):
+def debug(message: str):
     debug_lock.acquire()
     print(message, file=sys.stderr)
     debug_lock.release()
