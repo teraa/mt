@@ -18,16 +18,8 @@ def debug(message):
     debug_lock.release()
 
 
-class TunPeer(object):
-
-    def __init__(self, interface, laddr, lport, raddr, rport):
-        self._tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
-        self._tun.addr = config.TUN_ADDRESS
-        self._tun.netmask = config.TUN_NETMASK
-        self._tun.mtu = 1500
-        self._tun.persist(True)
-        self._tun.up()
-
+class UdpClient():
+    def __init__(self, laddr: str, lport: int, raddr: str, rport: int) -> None:
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind((laddr, lport))
         print(f'Listening on: {laddr}:{lport}')
@@ -36,16 +28,13 @@ class TunPeer(object):
         self._rport = rport
         print(f'Remote host: {raddr}:{rport}')
 
-        self._read_queue = queue.Queue()
-        self._write_queue = queue.Queue()
-
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._sock.close()
 
-    def socket_reader(self):
+    def reader(self, queue: queue.Queue):
         debug('SR')
         while True:
             try:
@@ -56,24 +45,52 @@ class TunPeer(object):
                     debug(f'Drop packet from {addr}')
                     continue
 
-                self._read_queue.put(data)
+                queue.put(data)
 
             except socket.error as e:
                 if e[0] == errno.EINTR:
                     continue
 
-    def socket_writer(self):
+    def writer(self, queue: queue.Queue):
         debug('SW')
         while True:
             try:
-                data = self._write_queue.get()
+                data = queue.get()
                 self._sock.sendto(data, (self._raddr, self._rport))
                 debug(f'SW: {len(data)} bytes')
-                self._write_queue.task_done()
+                queue.task_done()
 
             except socket.error as e:
                 if e[0] == errno.EINTR:
                     continue
+
+
+class TunPeer(object):
+
+    def __init__(self, interface, laddr, lport, raddr, rport):
+        self._tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
+        self._tun.addr = config.TUN_ADDRESS
+        self._tun.netmask = config.TUN_NETMASK
+        self._tun.mtu = 1500
+        self._tun.persist(True)
+        self._tun.up()
+
+        self._read_queue = queue.Queue()
+        self._write_queue = queue.Queue()
+
+        self._client = UdpClient(laddr, lport, raddr, rport)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._sock.close()
+
+    def client_reader(self):
+        self._client.reader(self._read_queue)
+
+    def client_writer(self):
+        self._client.writer(self._write_queue)
 
     def tun_reader(self):
         debug('TR')
@@ -105,8 +122,8 @@ class TunPeer(object):
 
         threads = []
         funcs = [
-            self.socket_reader,
-            self.socket_writer,
+            self.client_reader,
+            self.client_writer,
             self.tun_reader,
             self.tun_writer
         ]
