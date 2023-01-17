@@ -12,13 +12,14 @@ from udp import *
 class TunPeer(object):
 
     def __init__(self, interface: str, client: TransportClient):
-        self._tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
-        self._tun.addr = config.TUN_ADDRESS
-        self._tun.netmask = config.TUN_NETMASK
-        self._tun.mtu = 1500
-        self._tun.persist(True)
-        self._tun.up()
-
+        tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
+        tun.addr = config.TUN_ADDRESS
+        tun.netmask = config.TUN_NETMASK
+        tun.mtu = 1500
+        tun.persist(True)
+        tun.up()
+        
+        self._tun = tun
         self._client = client
 
     def reader(self):
