@@ -1,5 +1,4 @@
 import logging
-import queue
 import socket
 import errno
 from transport import *
