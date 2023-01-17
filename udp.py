@@ -3,9 +3,10 @@ import socket
 import errno
 from transport import *
 
+Address = tuple[str, int]
 
 class UdpClient(TransportClient):
-    def __init__(self, local: tuple[str, int], remote: tuple[str, int]) -> None:
+    def __init__(self, local: Address, remote: Address) -> None:
         super().__init__()
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
