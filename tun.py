@@ -51,15 +51,15 @@ class TunPeer(object):
     def run(self):
 
         threads = []
-        funcs = [
-            self._client.reader,
-            self._client.writer,
-            self.reader,
-            self.writer
+        targets = [
+            (self._client.reader, 'Client Reader'),
+            (self._client.writer, 'Client Writer'),
+            (self.reader, 'TUN Reader'),
+            (self.writer, 'TUN Writer')
         ]
 
-        for f in funcs:
-            t = threading.Thread(target=f, daemon=True)
+        for target in targets:
+            t = threading.Thread(target=target[0], name=target[1], daemon=True)
             t.start()
             threads.append(t)
 
