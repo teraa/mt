@@ -94,7 +94,7 @@ def main():
         parser.print_help()
         return 1
 
-    with UdpClient(opt.laddr, opt.lport, opt.raddr, opt.rport) as client:
+    with UdpClient((opt.laddr, opt.lport), (opt.raddr, opt.rport)) as client:
         peer = TunPeer(opt.interface, client)
         peer.run()
 

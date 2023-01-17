@@ -6,14 +6,13 @@ from transport import *
 
 
 class UdpClient(TransportClient):
-    def __init__(self, laddr: str, lport: int, raddr: str, rport: int) -> None:
+    def __init__(self, local: tuple[str, int], remote: tuple[str, int]) -> None:
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._sock.bind((laddr, lport))
-        print(f'Listening on: {laddr}:{lport}')
+        self._sock.bind(local)
+        print(f'Listening on: {local}')
 
-        self._raddr = raddr
-        self._rport = rport
-        print(f'Remote host: {raddr}:{rport}')
+        self._remote = remote
+        print(f'Remote host: {remote}')
 
     def __enter__(self):
         return self
@@ -26,9 +25,9 @@ class UdpClient(TransportClient):
         while True:
             try:
                 data, addr = self._sock.recvfrom(65535)
-                logging.debug(f'{len(data)} bytes')
+                logging.debug(f'{addr} {len(data)} bytes')
 
-                if addr[0] != self._raddr or addr[1] != self._rport:
+                if addr != self._remote:
                     logging.debug(f'Drop packet from {addr}')
                     continue
 
@@ -43,8 +42,8 @@ class UdpClient(TransportClient):
         while True:
             try:
                 data = queue.get()
-                self._sock.sendto(data, (self._raddr, self._rport))
-                logging.debug(f'{len(data)} bytes')
+                self._sock.sendto(data, self._remote)
+                logging.debug(f'{self._remote} {len(data)} bytes')
                 queue.task_done()
 
             except socket.error as e:
