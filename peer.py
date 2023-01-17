@@ -2,7 +2,6 @@ import logging
 import queue
 import sys
 import optparse
-import socket
 import errno
 import threading
 import pytun
