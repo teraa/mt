@@ -21,13 +21,7 @@ class TunPeer(object):
 
         self._client = client
 
-    def client_reader(self):
-        self._client.reader()
-
-    def client_writer(self):
-        self._client.writer()
-
-    def tun_reader(self):
+    def reader(self):
         logging.debug('Start')
         while True:
             try:
@@ -40,7 +34,7 @@ class TunPeer(object):
                 if e[0] == errno.EINTR:
                     continue
 
-    def tun_writer(self):
+    def writer(self):
         logging.debug('Start')
         while True:
             try:
@@ -57,10 +51,10 @@ class TunPeer(object):
 
         threads = []
         funcs = [
-            self.client_reader,
-            self.client_writer,
-            self.tun_reader,
-            self.tun_writer
+            self._client.reader,
+            self._client.writer,
+            self.reader,
+            self.writer
         ]
 
         for f in funcs:
