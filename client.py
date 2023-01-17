@@ -9,7 +9,7 @@ def producer():
     while True:
         sock.sendto(str.encode('message ' + str(i)), host)
         i = i + 1
-        time.sleep(120)
+        time.sleep(2)
 
 
 sighandler.register()
