@@ -74,7 +74,7 @@ class TunPeer(object):
 
 def main():
     sighandler.register()
-    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(funcName)s: %(message)s',
+    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(module)s.%(funcName)s: %(message)s',
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
