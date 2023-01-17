@@ -3,9 +3,10 @@ import sighandler
 
 sighandler.register()
 
+listen_addr = ('0.0.0.0', 4040)
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-    sock.bind(('0.0.0.0', 4040))
-    print('listening')
+    sock.bind(listen_addr)
+    print(f'Listening on {listen_addr}')
 
     while True:
         data, addr = sock.recvfrom(65536)
