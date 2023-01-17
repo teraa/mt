@@ -6,7 +6,7 @@ import threading
 import pytun
 import config
 import sighandler
-from udp_transport import *
+from udp import *
 
 
 class TunPeer(object):
