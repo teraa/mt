@@ -7,6 +7,8 @@ from transport import *
 
 class UdpClient(TransportClient):
     def __init__(self, local: tuple[str, int], remote: tuple[str, int]) -> None:
+        super().__init__()
+
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._sock.bind(local)
         print(f'Listening on: {local}')
@@ -20,7 +22,7 @@ class UdpClient(TransportClient):
     def __exit__(self, exc_type, exc_value, traceback):
         self._sock.close()
 
-    def reader(self, queue: queue.Queue):
+    def reader(self):
         logging.debug('Start')
         while True:
             try:
@@ -31,20 +33,20 @@ class UdpClient(TransportClient):
                     logging.debug(f'Drop packet from {addr}')
                     continue
 
-                queue.put(data)
+                self.r.put(data)
 
             except socket.error as e:
                 if e[0] == errno.EINTR:
                     continue
 
-    def writer(self, queue: queue.Queue):
+    def writer(self):
         logging.debug('Start')
         while True:
             try:
-                data = queue.get()
+                data = self.w.get()
                 self._sock.sendto(data, self._remote)
                 logging.debug(f'{self._remote} {len(data)} bytes')
-                queue.task_done()
+                self.w.task_done()
 
             except socket.error as e:
                 if e[0] == errno.EINTR:

@@ -20,16 +20,13 @@ class TunPeer(object):
         self._tun.persist(True)
         self._tun.up()
 
-        self._read_queue = queue.Queue()
-        self._write_queue = queue.Queue()
-
         self._client = client
 
     def client_reader(self):
-        self._client.reader(self._read_queue)
+        self._client.reader()
 
     def client_writer(self):
-        self._client.writer(self._write_queue)
+        self._client.writer()
 
     def tun_reader(self):
         logging.debug('Start')
@@ -38,7 +35,7 @@ class TunPeer(object):
                 data = self._tun.read(self._tun.mtu)
                 logging.debug(f'{len(data)} bytes')
 
-                self._write_queue.put(data)
+                self._client.w.put(data)
 
             except pytun.Error as e:
                 if e[0] == errno.EINTR:
@@ -48,10 +45,10 @@ class TunPeer(object):
         logging.debug('Start')
         while True:
             try:
-                data = self._read_queue.get()
+                data = self._client.r.get()
                 self._tun.write(data)
                 logging.debug(f'{len(data)} bytes')
-                self._read_queue.task_done()
+                self._client.r.task_done()
 
             except pytun.Error as e:
                 if e[0] == errno.EINTR:

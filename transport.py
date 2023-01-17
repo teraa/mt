@@ -1,8 +1,12 @@
 import queue
 
 class TransportClient():
-    def reader(self, queue: queue.Queue):
+    def __init__(self) -> None:
+        self.r = queue.Queue()
+        self.w = queue.Queue()
+
+    def reader(self):
         pass
 
-    def writer(self, queue: queue.Queue):
+    def writer(self):
         pass
