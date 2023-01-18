@@ -1,5 +1,6 @@
 import socket
 from scapy.layers.inet import *
+# from scapy.sendrecv import send, sniff, AsyncSniffer
 
 print('Start')
 with socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP) as sock:
