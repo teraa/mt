@@ -7,6 +7,7 @@ from scapy.sendrecv import *
 
 Address = str
 ICMP_TYPE = 201
+ETHERTYPE = 0x0800
 
 # send(IP(dst='f1.lan')/ICMP(type=201)/IP(dst='f1.tun')/ICMP())
 class IcmpClient(TransportClient):
@@ -14,7 +15,7 @@ class IcmpClient(TransportClient):
         super().__init__()
 
         self._sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
-        self._sock.bind((interface, 0x0800))
+        self._sock.bind((interface, ETHERTYPE))
         logging.info(f'Listening on {interface=}')
 
 
