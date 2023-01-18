@@ -15,7 +15,7 @@ class TunPeer(object):
         tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         tun.addr = config.TUN_ADDRESS
         tun.netmask = config.TUN_NETMASK
-        tun.mtu = 1500
+        tun.mtu = 400
         tun.persist(True)
         tun.up()
         
