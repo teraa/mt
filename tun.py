@@ -6,7 +6,9 @@ import threading
 import pytun
 import config
 import sighandler
-from udp import *
+from transport import TransportClient
+from udp import UdpClient
+from icmp import IcmpClient
 from scapy.layers.inet import *
 
 
