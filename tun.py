@@ -14,11 +14,11 @@ from scapy.layers.inet import *
 
 class TunPeer(object):
 
-    def __init__(self, interface: str, client: TransportClient):
+    def __init__(self, interface: str, address: str, netmask: str, mtu: int, client: TransportClient):
         tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
-        tun.addr = config.TUN_ADDRESS
-        tun.netmask = config.TUN_NETMASK
-        tun.mtu = 400
+        tun.addr = address
+        tun.netmask = netmask
+        tun.mtu = mtu
         tun.persist(True)
         tun.up()
         
@@ -76,12 +76,18 @@ def main():
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
-    parser.add_option('--ti', dest='tif', default=config.TUN_INTERFACE, help='TUN interface to use [%default]')
-    parser.add_option('--li', dest='lif', default=config.LOCAL_INTERFACE, help='local interface to use [%default]')
-    parser.add_option('--la', dest='laddr', default='0.0.0.0', help='local address [%default]')
-    parser.add_option('--lp', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
-    parser.add_option('--ra', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
-    parser.add_option('--rp', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
+    parser.add_option('--tif', dest='tif', default=config.TUN_INTERFACE, help='name of the TUN interface to use [%default]')
+    parser.add_option('--taddr', dest='taddr', default=config.TUN_ADDRESS, help='TUN address [%default]')
+    parser.add_option('--tmask', dest='tmask', default=config.TUN_NETMASK, help='TUN netmask [%default]')
+    parser.add_option('--tmtu', dest='tmtu', default=config.TUN_MTU, help='TUN MTU [%default]')
+
+    parser.add_option('--lif', dest='lif', default=config.LOCAL_INTERFACE, help='name of the local interface to use [%default]')
+    parser.add_option('--laddr', dest='laddr', default='0.0.0.0', help='local address [%default]')
+    parser.add_option('--lport', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
+
+    parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
+    parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
+
     parser.add_option('--proto', dest='proto', default='icmp', help='protocol to use: udp or icmp [%default]')
     opt, args = parser.parse_args()
 
@@ -96,7 +102,7 @@ def main():
             return 1
     
     try:
-        peer = TunPeer(opt.tif, client)
+        peer = TunPeer(opt.tif, opt.taddr, opt.tmask, opt.tmtu, client)
         peer.run()
     finally:
         client.close()
