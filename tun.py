@@ -82,15 +82,24 @@ def main():
     parser.add_option('--lp', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
     parser.add_option('--ra', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rp', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
+    parser.add_option('--proto', dest='proto', default='icmp', help='protocol to use: udp or icmp [%default]')
     opt, args = parser.parse_args()
 
-    if not opt.raddr:
-        parser.print_help()
-        return 1
-
-    with UdpClient((opt.laddr, opt.lport), (opt.raddr, opt.rport)) as client:
+    match opt.proto:
+        case 'udp':
+            client = UdpClient((opt.laddr, opt.lport), (opt.raddr, opt.rport))
+        case 'icmp':
+            client = IcmpClient(opt.lif, opt.laddr, opt.raddr)
+        case _:
+            parser.print_help()
+            parser.error('Invalid --proto value')
+            return 1
+    
+    try:
         peer = TunPeer(opt.tif, client)
         peer.run()
+    finally:
+        client.close()
 
     return 0
 
