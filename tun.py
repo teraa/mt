@@ -76,11 +76,12 @@ def main():
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
-    parser.add_option('-i', dest='interface', default=config.TUN_INTERFACE, help='TUN interface to use [%default]')
-    parser.add_option('-a', dest='laddr', default='0.0.0.0', help='local address [%default]')
-    parser.add_option('-p', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
-    parser.add_option('-A', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
-    parser.add_option('-P', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
+    parser.add_option('--ti', dest='tif', default=config.TUN_INTERFACE, help='TUN interface to use [%default]')
+    parser.add_option('--li', dest='lif', default=config.LOCAL_INTERFACE, help='local interface to use [%default]')
+    parser.add_option('--la', dest='laddr', default='0.0.0.0', help='local address [%default]')
+    parser.add_option('--lp', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
+    parser.add_option('--ra', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
+    parser.add_option('--rp', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
     opt, args = parser.parse_args()
 
     if not opt.raddr:
@@ -88,7 +89,7 @@ def main():
         return 1
 
     with UdpClient((opt.laddr, opt.lport), (opt.raddr, opt.rport)) as client:
-        peer = TunPeer(opt.interface, client)
+        peer = TunPeer(opt.tif, client)
         peer.run()
 
     return 0
