@@ -74,7 +74,7 @@ def main():
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
-    parser.add_option('-i', dest='interface', default=config.INTERFACE, help='TUN interface to use [%default]')
+    parser.add_option('-i', dest='interface', default=config.TUN_INTERFACE, help='TUN interface to use [%default]')
     parser.add_option('-a', dest='laddr', default='0.0.0.0', help='local address [%default]')
     parser.add_option('-p', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
     parser.add_option('-A', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
