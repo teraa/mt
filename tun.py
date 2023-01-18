@@ -7,6 +7,7 @@ import pytun
 import config
 import sighandler
 from udp import *
+from scapy.layers.inet import *
 
 
 class TunPeer(object):
@@ -27,7 +28,7 @@ class TunPeer(object):
         while True:
             try:
                 data = self._tun.read(self._tun.mtu)
-                logging.debug(f'{len(data)} bytes')
+                logging.debug(IP(data))
 
                 self._client.w.put(data)
 
@@ -41,7 +42,7 @@ class TunPeer(object):
             try:
                 data = self._client.r.get()
                 self._tun.write(data)
-                logging.debug(f'{len(data)} bytes')
+                logging.debug(IP(data))
                 self._client.r.task_done()
 
             except pytun.Error as e:
