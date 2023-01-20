@@ -23,12 +23,6 @@ class IcmpClient(TransportClient):
         self._remote = remote
         logging.info(f'Remote host: {remote}')
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
-
     def close(self):
         self._sock.close()
 
