@@ -39,7 +39,10 @@ class UdpClient(TransportClient):
                 self.r.put(packet)
 
             except socket.error as e:
-                if e[0] == errno.EINTR:
+                logging.error(str(e))
+                if e.errno == errno.EBADF:  # exiting
+                    return
+                if e.errno == errno.EINTR:  # interrupt
                     continue
 
     def writer(self):
@@ -52,5 +55,8 @@ class UdpClient(TransportClient):
                 self.w.task_done()
 
             except socket.error as e:
-                if e[0] == errno.EINTR:
+                logging.error(str(e))
+                if e.errno == errno.EBADF:  # exiting
+                    return
+                if e.errno == errno.EINTR:  # interrupt
                     continue
