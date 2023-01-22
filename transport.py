@@ -1,10 +1,11 @@
-import queue
+from scapy.layers.inet import *
+from queue import Queue
 
 
 class TransportClient():
     def __init__(self) -> None:
-        self.r = queue.Queue()
-        self.w = queue.Queue()
+        self.r = Queue[IP]()
+        self.w = Queue[IP]()
 
     def __enter__(self):
         return self

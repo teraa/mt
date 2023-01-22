@@ -30,7 +30,13 @@ class UdpClient(TransportClient):
                     logging.debug(f'Drop packet from {addr}')
                     continue
 
-                self.r.put(data)
+                try:
+                    packet: IP = IP(data)
+                except Exception as e:
+                    logging.warn(f'Error unpacking payload: {str(e)}')
+                    continue
+
+                self.r.put(packet)
 
             except socket.error as e:
                 if e[0] == errno.EINTR:
@@ -40,7 +46,8 @@ class UdpClient(TransportClient):
         logging.debug('Start')
         while True:
             try:
-                data = self.w.get()
+                packet = self.w.get()
+                data = raw(packet)
                 self._sock.sendto(data, self._remote)
                 logging.debug(f'{self._remote} {len(data)} bytes')
                 self.w.task_done()

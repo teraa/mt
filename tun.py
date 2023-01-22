@@ -30,9 +30,9 @@ class TunPeer(object):
         while True:
             try:
                 data = self._tun.read(self._tun.mtu)
-                logging.debug(IP(data))
-
-                self._client.w.put(data)
+                packet = IP(data)
+                logging.debug(packet)
+                self._client.w.put(packet)
 
             except pytun.Error as e:
                 if e[0] == errno.EINTR:
@@ -42,9 +42,9 @@ class TunPeer(object):
         logging.debug('Start')
         while True:
             try:
-                data = self._client.r.get()
-                self._tun.write(data)
-                logging.debug(IP(data))
+                packet = self._client.r.get()
+                self._tun.write(raw(packet))
+                logging.debug(packet)
                 self._client.r.task_done()
 
             except pytun.Error as e:

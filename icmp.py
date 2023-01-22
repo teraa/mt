@@ -57,7 +57,7 @@ class IcmpClient(TransportClient):
                     continue
 
                 logging.debug(inner_ip)
-                self.r.put(inner_ip_raw)
+                self.r.put(inner_ip)
 
             except socket.error as e:
                 logging.error(str(e))
@@ -70,10 +70,10 @@ class IcmpClient(TransportClient):
         logging.debug('Start')
         while True:
             try:
-                data = self.w.get()
-                frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/data
+                packet = self.w.get()
+                frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
                 self._sock.sendto(raw(frame), self._address)
-                logging.debug(IP(data))
+                logging.debug(packet)
                 self.w.task_done()
 
             except socket.error as e:
