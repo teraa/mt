@@ -13,10 +13,10 @@
             "justMyCode": true
         },
         {
-            "name": "tun.py",
+            "name": "Main",
             "type": "python",
             "request": "launch",
-            "program": "tun.py",
+            "program": ".",
             "console": "integratedTerminal",
             "justMyCode": true
         }
