@@ -22,8 +22,9 @@ def main():
         def writer():
             i = 0
             while True:
-                logging.info(f'send: {i}')
-                sock.sendall(str.encode(str(i) + '\n'))
+                message = f'message {i}'
+                logging.info(f'send: {message}')
+                sock.sendall(str.encode(message + '\n'))
                 i = i + 1
                 time.sleep(opt.interval)
         
