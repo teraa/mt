@@ -32,6 +32,14 @@ class TunPeer(object):
                 data = self._tun.read(self._tun.mtu)
                 packet = IP(data)
 
+                if packet.proto == 2:
+                    logging.debug('Drop igmp')
+                    continue
+
+                if packet.proto == 128:
+                    logging.debug('Drop sscopmce')
+                    continue
+
                 if TCP in packet and packet[TCP].dport == 5355:
                     logging.debug('Drop hostmon')
                     continue
@@ -94,7 +102,7 @@ def main():
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default='icmp', help='protocol to use: udp or icmp [%default]')
+    parser.add_option('--proto', dest='proto', default='udp', help='protocol to use: udp or icmp [%default]')
     opt, args = parser.parse_args()
 
     match opt.proto:
