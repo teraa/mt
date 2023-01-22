@@ -21,7 +21,7 @@ class TunPeer(object):
         tun.mtu = mtu
         tun.persist(True)
         tun.up()
-        
+
         self._tun = tun
         self._client = client
 
@@ -43,7 +43,7 @@ class TunPeer(object):
                 if TCP in packet and packet[TCP].dport == 5355:
                     logging.debug('Drop hostmon')
                     continue
-                
+
                 logging.debug(packet)
                 self._client.w.put(packet)
 
@@ -114,7 +114,7 @@ def main():
             parser.print_help()
             parser.error('Invalid --proto value')
             return 1
-    
+
     try:
         peer = TunPeer(opt.tif, opt.taddr, opt.tmask, opt.tmtu, client)
         peer.run()

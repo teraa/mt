@@ -5,6 +5,7 @@ from transport import *
 
 Address = tuple[str, int]
 
+
 class UdpClient(TransportClient):
     def __init__(self, local: Address, remote: Address) -> None:
         super().__init__()

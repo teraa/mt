@@ -2,8 +2,6 @@ import logging
 import socket
 import errno
 from transport import *
-from scapy.layers.inet import *
-from scapy.sendrecv import *
 
 Address = str
 ICMP_TYPE = 201
