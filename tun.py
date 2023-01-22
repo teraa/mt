@@ -32,7 +32,7 @@ class TunPeer(object):
                 data = self._tun.read(self._tun.mtu)
                 packet = IP(data)
 
-                if TCP in packet and (packet[TCP].sport == 5355 or packet[TCP].dport == 5355):
+                if TCP in packet and packet[TCP].dport == 5355:
                     logging.debug('Drop hostmon')
                     continue
                 
@@ -48,10 +48,6 @@ class TunPeer(object):
         while True:
             try:
                 packet = self._client.r.get()
-
-                if TCP in packet and packet[TCP].sport == 5355:
-                    logging.debug('Drop hostmon')
-                    continue
 
                 self._tun.write(raw(packet))
                 logging.debug(packet)
