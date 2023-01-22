@@ -10,18 +10,20 @@ ICMP_TYPE = 201
 ETHERTYPE = 0x0800
 
 # send(IP(dst='f1.lan')/ICMP(type=201)/IP(dst='f1.tun')/ICMP())
+
+
 class IcmpClient(TransportClient):
     def __init__(self, interface: str, local: Address, remote: Address) -> None:
         super().__init__()
+
         self._address = (interface, ETHERTYPE)
+        self._local = local
+        self._remote = remote
 
         self._sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
         self._sock.bind(self._address)
+
         logging.info(f'Listening on {interface=}')
-
-
-        self._local = local
-        self._remote = remote
         logging.info(f'Remote host: {remote}')
 
     def close(self):
@@ -37,32 +39,31 @@ class IcmpClient(TransportClient):
                 if ICMP not in ether:
                     continue
 
-                ip : IP = ether[IP]
+                ip: IP = ether[IP]
                 if ip.src != self._remote:
                     logging.debug(f'Drop packet from {ip.src}')
                     continue
-                
-                icmp : ICMP = ip[ICMP]
+
+                icmp: ICMP = ip[ICMP]
                 if icmp.type != ICMP_TYPE:
                     logging.debug(f'Drop ICMP type {icmp.type}')
                     continue
 
                 inner_ip_raw = raw(icmp.payload)
                 try:
-                    inner_ip : IP = IP(inner_ip_raw)
+                    inner_ip: IP = IP(inner_ip_raw)
                 except Exception as e:
                     logging.warn(f'Error unpacking ICMP payload: {str(e)}')
                     continue
-
 
                 logging.debug(inner_ip)
                 self.r.put(inner_ip_raw)
 
             except socket.error as e:
                 logging.error(str(e))
-                if e.errno == errno.EBADF: # exiting
+                if e.errno == errno.EBADF:  # exiting
                     return
-                if e.errno == errno.EINTR: # interrupt
+                if e.errno == errno.EINTR:  # interrupt
                     continue
 
     def writer(self):
@@ -70,14 +71,14 @@ class IcmpClient(TransportClient):
         while True:
             try:
                 data = self.w.get()
-                frame : Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/data
+                frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/data
                 self._sock.sendto(raw(frame), self._address)
                 logging.debug(IP(data))
                 self.w.task_done()
 
             except socket.error as e:
                 logging.error(str(e))
-                if e.errno == errno.EBADF: # exiting
+                if e.errno == errno.EBADF:  # exiting
                     return
-                if e.errno == errno.EINTR: # interrupt
+                if e.errno == errno.EINTR:  # interrupt
                     continue
