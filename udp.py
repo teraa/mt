@@ -1,6 +1,5 @@
 import logging
 import socket
-import errno
 from transport import *
 
 Address = tuple[str, int]
@@ -20,43 +19,26 @@ class UdpClient(TransportClient):
     def close(self):
         self._sock.close()
 
-    def reader(self):
-        logging.debug('Start')
-        while True:
-            try:
-                data, addr = self._sock.recvfrom(65535)
+    @TransportClient.socket_catch
+    def read(self):
+        data, addr = self._sock.recvfrom(65535)
 
-                if addr != self._remote:
-                    logging.debug(f'Drop packet from {addr}')
-                    continue
+        if addr != self._remote:
+            logging.debug(f'Drop packet from {addr}')
+            return
 
-                try:
-                    packet: IP = IP(data)
-                except Exception as e:
-                    logging.warn(f'Error unpacking payload: {str(e)}')
-                    continue
+        try:
+            packet: IP = IP(data)
+        except Exception as e:
+            logging.warn(f'Error unpacking payload: {str(e)}')
+            return
 
-                self.r.put(packet)
+        self.r.put(packet)
 
-            except socket.error as e:
-                logging.error(str(e))
-                if e.errno == errno.EBADF:  # exiting
-                    return
-                if e.errno == errno.EINTR:  # interrupt
-                    continue
-
-    def writer(self):
-        logging.debug('Start')
-        while True:
-            try:
-                packet = self.w.get()
-                data = raw(packet)
-                self._sock.sendto(data, self._remote)
-                self.w.task_done()
-
-            except socket.error as e:
-                logging.error(str(e))
-                if e.errno == errno.EBADF:  # exiting
-                    return
-                if e.errno == errno.EINTR:  # interrupt
-                    continue
+    @TransportClient.socket_catch
+    def write(self):
+        packet = self.w.get()
+        data = raw(packet)
+        self._sock.sendto(data, self._remote)
+        self.w.task_done()
+        raise socket.error()
