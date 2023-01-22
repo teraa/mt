@@ -14,10 +14,10 @@ class TransportClient():
         self.close()
 
     def close(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def reader(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def writer(self):
-        raise NotImplementedError
+        raise NotImplementedError()
