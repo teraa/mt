@@ -43,6 +43,11 @@ class TunPeer(object):
         while True:
             try:
                 packet = self._client.r.get()
+
+                if TCP in packet and packet[TCP].sport == 5355:
+                    logging.debug('Drop hostmon')
+                    continue
+
                 self._tun.write(raw(packet))
                 logging.debug(packet)
                 self._client.r.task_done()
