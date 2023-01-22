@@ -56,7 +56,6 @@ class IcmpClient(TransportClient):
                     logging.warn(f'Error unpacking ICMP payload: {str(e)}')
                     continue
 
-                logging.debug(inner_ip)
                 self.r.put(inner_ip)
 
             except socket.error as e:
@@ -73,7 +72,6 @@ class IcmpClient(TransportClient):
                 packet = self.w.get()
                 frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
                 self._sock.sendto(raw(frame), self._address)
-                logging.debug(packet)
                 self.w.task_done()
 
             except socket.error as e:

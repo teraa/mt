@@ -24,7 +24,6 @@ class UdpClient(TransportClient):
         while True:
             try:
                 data, addr = self._sock.recvfrom(65535)
-                logging.debug(f'{addr} {len(data)} bytes')
 
                 if addr != self._remote:
                     logging.debug(f'Drop packet from {addr}')
@@ -49,7 +48,6 @@ class UdpClient(TransportClient):
                 packet = self.w.get()
                 data = raw(packet)
                 self._sock.sendto(data, self._remote)
-                logging.debug(f'{self._remote} {len(data)} bytes')
                 self.w.task_done()
 
             except socket.error as e:
