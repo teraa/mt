@@ -13,9 +13,10 @@ ETHERTYPE = 0x0800
 class IcmpClient(TransportClient):
     def __init__(self, interface: str, local: Address, remote: Address) -> None:
         super().__init__()
+        self._address = (interface, ETHERTYPE)
 
         self._sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
-        self._sock.bind((interface, ETHERTYPE))
+        self._sock.bind(self._address)
         logging.info(f'Listening on {interface=}')
 
 
@@ -69,8 +70,8 @@ class IcmpClient(TransportClient):
         while True:
             try:
                 data = self.w.get()
-                ip : IP = IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/data
-                send(ip, verbose=False)
+                frame : Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/data
+                self._sock.sendto(raw(frame), self._address)
                 logging.debug(IP(data))
                 self.w.task_done()
 
