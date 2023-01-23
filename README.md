@@ -8,9 +8,9 @@
 sudo setcap CAP_NET_RAW,CAP_NET_ADMIN=eip $(readlink -f $(which python3.11))
 ```
 
-## Manual TUN Setup
+## Manual TUN Setup (optional)
 
-### Up
+### Setup
 
 ```sh
 #!/bin/bash
@@ -23,7 +23,7 @@ ip link set dev mt up
 ip link set dev mt mtu 1500
 ```
 
-### Down
+### Cleanup
 
 ```sh
 ip link del dev mt
