@@ -26,7 +26,7 @@ class IcmpClient(TransportClient):
     def close(self):
         self._sock.close()
 
-    @TransportClient.socket_catch
+    @socket_catch
     def read(self):
         data, addr = self._sock.recvfrom(65535)
         ether = Ether(data)
@@ -53,7 +53,7 @@ class IcmpClient(TransportClient):
 
         self.r.put(inner_ip)
 
-    @TransportClient.socket_catch
+    @socket_catch
     def write(self):
         packet = self.w.get()
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)

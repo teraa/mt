@@ -19,7 +19,7 @@ class UdpClient(TransportClient):
     def close(self):
         self._sock.close()
 
-    @TransportClient.socket_catch
+    @socket_catch
     def read(self):
         data, addr = self._sock.recvfrom(65535)
 
@@ -35,7 +35,7 @@ class UdpClient(TransportClient):
 
         self.r.put(packet)
 
-    @TransportClient.socket_catch
+    @socket_catch
     def write(self):
         packet = self.w.get()
         data = raw(packet)
