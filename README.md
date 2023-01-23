@@ -1,6 +1,10 @@
 # mt
+Tunnel IPv4 traffic using ICMP or UDP as transfer protocols.
+Uses TUN/TAP interfaces and works only on linux.
 
 ## Prerequisites
+- Python 3.11 (!)
+- python-venv
 
 ### Set capabilities
 
