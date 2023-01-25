@@ -4,20 +4,22 @@ from scapy.layers.inet import *
 from queue import Queue
 
 
-def socket_catch(func):
-    def w(*args):
+def socket_guard(func):
+    def socket_guard(*args):
         try:
             func(*args)
+            return True
+            
         except OSError as e:
-            logging.error(e)
+            if e.errno == errno.EINTR: # interrupt
+                return True
             if e.errno == errno.EBADF:  # exiting
                 return False
-            if e.errno == errno.EINTR:  # interrupt
-                return True
 
-        return True
+            logging.exception(e)
+            raise
 
-    return w
+    return socket_guard
 
 
 class TransportClient():
@@ -35,17 +37,15 @@ class TransportClient():
         raise NotImplementedError()
 
     def reader(self):
-        logging.debug('Start')
-        while self.read():
+        while self._read():
             pass
 
     def writer(self):
-        logging.debug('Start')
-        while self.write():
+        while self._write():
             pass
 
-    def read(self) -> bool:
+    def _read(self) -> bool:
         raise NotImplementedError()
 
-    def write(self) -> bool:
+    def _write(self) -> bool:
         raise NotImplementedError()

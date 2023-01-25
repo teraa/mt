@@ -20,8 +20,8 @@ class UdpClient(TransportClient):
     def close(self):
         self._sock.close()
 
-    @socket_catch
-    def read(self):
+    @socket_guard
+    def _read(self):
         data = self._sock.recv(65535)
 
         try:
@@ -32,8 +32,8 @@ class UdpClient(TransportClient):
 
         self.r.put(packet)
 
-    @socket_catch
-    def write(self):
+    @socket_guard
+    def _write(self):
         packet = self.w.get()
         data = raw(packet)
         self._sock.sendall(data)
