@@ -1,16 +1,17 @@
 import logging
 import sys
 import optparse
-from baseclient import *
 import config
-from tun import TunClient
-import sighandler
-from udp import UdpClient
-from icmp import IcmpClient
+from base_client import *
+from tun_client import TunClient
+from udp_client import UdpClient
+from icmp_client import IcmpClient
+from tunnel import Tunnel
+from utils import sighandler
 
 
 def main():
-    sighandler.register()
+    sighandler()
     logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(module)s.%(funcName)s: %(message)s',
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 

@@ -1,7 +1,7 @@
 import logging
 import errno
 import pytun
-from baseclient import *
+from base_client import *
 
 
 class TunClient(BaseClient):

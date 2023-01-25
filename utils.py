@@ -1,5 +1,16 @@
 import errno
 import logging
+import signal
+import sys
+
+
+def _handler(sig, frame):
+    print('\nExiting...')
+    sys.exit(0)
+
+
+def sighandler():
+    return signal.signal(signal.SIGINT, _handler)
 
 
 def socket_guard(func):
