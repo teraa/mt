@@ -41,4 +41,3 @@ class UdpClient(TransportClient):
         data = raw(packet)
         self._sock.sendto(data, self._remote)
         self.w.task_done()
-        raise socket.error()
