@@ -2,11 +2,11 @@ import logging
 import sys
 import optparse
 import config
-from base_client import *
-from tun_client import TunClient
-from udp_client import UdpClient
-from icmp_client import IcmpClient
-from tunnel import Tunnel
+from BaseClient import *
+from TunClient import TunClient
+from UdpClient import UdpClient
+from IcmpClient import IcmpClient
+from Tunnel import Tunnel
 from utils import sighandler
 
 

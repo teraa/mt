@@ -1,6 +1,6 @@
 import logging
 import socket
-from base_client import *
+from BaseClient import *
 from utils import socket_guard
 
 Address = tuple[str, int]
