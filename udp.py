@@ -10,10 +10,11 @@ class UdpClient(TransportClient):
         super().__init__()
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
         self._sock.bind(local)
         print(f'Listening on: {local}')
 
-        self._remote = remote
+        self._sock.connect(remote)
         print(f'Remote host: {remote}')
 
     def close(self):
@@ -21,11 +22,7 @@ class UdpClient(TransportClient):
 
     @socket_catch
     def read(self):
-        data, addr = self._sock.recvfrom(65535)
-
-        if addr != self._remote:
-            logging.debug(f'Drop packet from {addr}')
-            return
+        data = self._sock.recv(65535)
 
         try:
             packet: IP = IP(data)
@@ -39,5 +36,5 @@ class UdpClient(TransportClient):
     def write(self):
         packet = self.w.get()
         data = raw(packet)
-        self._sock.sendto(data, self._remote)
+        self._sock.sendall(data)
         self.w.task_done()
