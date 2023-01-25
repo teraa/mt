@@ -8,8 +8,8 @@ def socket_catch(func):
     def w(*args):
         try:
             func(*args)
-        except socket.error as e:
-            logging.error(str(e))
+        except OSError as e:
+            logging.error(e)
             if e.errno == errno.EBADF:  # exiting
                 return False
             if e.errno == errno.EINTR:  # interrupt
