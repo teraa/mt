@@ -1,11 +1,12 @@
 from scapy.layers.inet import *
 from queue import Queue
 
+QueuePair = tuple[Queue[IP], Queue[IP]]
 
-class BaseClient():
+
+class BaseClient(object):
     def __init__(self) -> None:
-        self.r = Queue[IP]()
-        self.w = Queue[IP]()
+        pass
 
     def __enter__(self):
         return self

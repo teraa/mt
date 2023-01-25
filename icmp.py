@@ -11,8 +11,9 @@ ETHERTYPE = 0x0800
 
 
 class IcmpClient(BaseClient):
-    def __init__(self, interface: str, local: Address, remote: Address) -> None:
+    def __init__(self, q: QueuePair, interface: str, local: Address, remote: Address) -> None:
         super().__init__()
+        self._q = q
 
         self._address = (interface, ETHERTYPE)
         self._local = local
@@ -52,11 +53,11 @@ class IcmpClient(BaseClient):
             logging.warn(f'Error unpacking ICMP payload: {str(e)}')
             return
 
-        self.r.put(inner_ip)
+        self._q[0].put(inner_ip)
 
     @socket_guard
     def _write(self):
-        packet = self.w.get()
+        packet = self._q[1].get()
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
         self._sock.sendto(raw(frame), self._address)
-        self.w.task_done()
+        self._q[1].task_done()

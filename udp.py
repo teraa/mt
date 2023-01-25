@@ -7,8 +7,9 @@ Address = tuple[str, int]
 
 
 class UdpClient(BaseClient):
-    def __init__(self, local: Address, remote: Address) -> None:
+    def __init__(self, q: QueuePair, local: Address, remote: Address) -> None:
         super().__init__()
+        self._q = q
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -31,11 +32,11 @@ class UdpClient(BaseClient):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return
 
-        self.r.put(packet)
+        self._q[0].put(packet)
 
     @socket_guard
     def _write(self):
-        packet = self.w.get()
+        packet = self._q[1].get()
         data = raw(packet)
         self._sock.sendall(data)
-        self.w.task_done()
+        self._q[1].task_done()

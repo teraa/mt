@@ -1,8 +1,9 @@
 import logging
 import sys
 import optparse
+from baseclient import *
 import config
-from peer import TunPeer
+from tun import TunClient
 import sighandler
 from udp import UdpClient
 from icmp import IcmpClient
@@ -29,21 +30,25 @@ def main():
     parser.add_option('--proto', dest='proto', default='icmp', help='protocol to use: udp or icmp [%default]')
     opt, args = parser.parse_args()
 
+    q = QueuePair((Queue[IP](), Queue[IP]()))
+
     match opt.proto:
         case 'udp':
-            client = UdpClient((opt.laddr, opt.lport), (opt.raddr, opt.rport))
+            client1 = UdpClient(q, (opt.laddr, opt.lport), (opt.raddr, opt.rport))
         case 'icmp':
-            client = IcmpClient(opt.lif, opt.laddr, opt.raddr)
+            client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
         case _:
             parser.print_help()
             parser.error('Invalid --proto value')
             return 1
 
     try:
-        peer = TunPeer(opt.tif, opt.taddr, opt.tmask, opt.tmtu, client)
-        peer.run()
+        with TunClient(q, opt.tif, opt.taddr, opt.tmask, opt.tmtu, client1) as client2:
+            tunnel = Tunnel(client1, client2)
+            tunnel.run()
+
     finally:
-        client.close()
+        client1.close()
 
     return 0
 
