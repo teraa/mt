@@ -2,12 +2,12 @@ import logging
 import errno
 import threading
 import pytun
-from transport import *
+from baseclient import *
 
 
-class TunPeer(TransportClient):
+class TunPeer(BaseClient):
 
-    def __init__(self, interface: str, address: str, netmask: str, mtu: int, client: TransportClient):
+    def __init__(self, interface: str, address: str, netmask: str, mtu: int, client: BaseClient):
         tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         tun.addr = address
         tun.netmask = netmask

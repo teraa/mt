@@ -2,7 +2,7 @@ from scapy.layers.inet import *
 from queue import Queue
 
 
-class TransportClient():
+class BaseClient():
     def __init__(self) -> None:
         self.r = Queue[IP]()
         self.w = Queue[IP]()
