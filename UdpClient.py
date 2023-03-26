@@ -13,9 +13,6 @@ class UdpClient(BaseClient):
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        # self._sock.bind(local)
-        # print(f'Listening on: {local}')
-
         self._sock.connect(serverAddress)
         print(f'Remote host: {serverAddress}')
 
