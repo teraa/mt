@@ -6,28 +6,33 @@ from utils import socket_guard
 Address = tuple[str, int]
 
 
-class UdpClient(BaseClient):
-    def __init__(self, q: QueuePair, local: Address, remote: Address) -> None:
+class UdpServer(BaseClient):
+    def __init__(self, q: QueuePair, listenAddress: Address) -> None:
         super().__init__()
         self._q = q
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        self._sock.bind(local)
-        print(f'Listening on: {local}')
+        self._sock.bind(listenAddress)
+        print(f'Listening on: {listenAddress}')
 
-        self._sock.connect(remote)
-        print(f'Remote host: {remote}')
+        self._connected = False
 
     def close(self):
         self._sock.close()
 
     @socket_guard
     def _read(self):
-        data = self._sock.recv(65535)
+        data, addr = self._sock.recvfrom(65535)
 
         try:
             packet: IP = IP(data)
+
+            if not self._connected:
+                self._sock.connect(addr)
+                print(f'Client connected: {addr}')
+                self._connected = True
+
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
             return

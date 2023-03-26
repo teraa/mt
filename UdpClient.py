@@ -7,17 +7,17 @@ Address = tuple[str, int]
 
 
 class UdpClient(BaseClient):
-    def __init__(self, q: QueuePair, local: Address, remote: Address) -> None:
+    def __init__(self, q: QueuePair, serverAddress: Address) -> None:
         super().__init__()
         self._q = q
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        self._sock.bind(local)
-        print(f'Listening on: {local}')
+        # self._sock.bind(local)
+        # print(f'Listening on: {local}')
 
-        self._sock.connect(remote)
-        print(f'Remote host: {remote}')
+        self._sock.connect(serverAddress)
+        print(f'Remote host: {serverAddress}')
 
     def close(self):
         self._sock.close()

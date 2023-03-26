@@ -5,6 +5,7 @@ import config
 from BaseClient import *
 from TunClient import TunClient
 from UdpClient import UdpClient
+from UdpServer import UdpServer
 from IcmpClient import IcmpClient
 from Tunnel import Tunnel
 from utils import sighandler
@@ -28,14 +29,16 @@ def main():
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default='icmp', help='protocol to use: udp or icmp [%default]')
+    parser.add_option('--proto', dest='proto', default='udpc', help='protocol to use: udp or icmp [%default]')
     opt, args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))
 
     match opt.proto:
-        case 'udp':
-            client1 = UdpClient(q, (opt.laddr, opt.lport), (opt.raddr, opt.rport))
+        case 'udpc':
+            client1 = UdpClient(q, (opt.raddr, opt.rport))
+        case 'udps':
+            client1 = UdpServer(q, (opt.laddr, opt.lport))
         case 'icmp':
             client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
         case _:
