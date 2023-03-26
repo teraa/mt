@@ -29,7 +29,7 @@ def main():
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default='udpc', help='protocol to use: udp or icmp [%default]')
+    parser.add_option('--proto', dest='proto', default='udps', help='protocol to use: udpc, udps or icmp [%default]')
     opt, args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))

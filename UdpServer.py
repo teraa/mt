@@ -14,7 +14,7 @@ class UdpServer(BaseClient):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         self._sock.bind(listenAddress)
-        print(f'Listening on: {listenAddress}')
+        logging.info(f'Listening on: {listenAddress}')
 
         self._connected = False
 
@@ -30,7 +30,7 @@ class UdpServer(BaseClient):
 
             if not self._connected:
                 self._sock.connect(addr)
-                print(f'Client connected: {addr}')
+                logging.info(f'Client connected: {addr}')
                 self._connected = True
 
         except Exception as e:
@@ -42,6 +42,11 @@ class UdpServer(BaseClient):
     @socket_guard
     def _write(self):
         packet = self._q[1].get()
+
+        if not self._connected:
+            logging.warn(f'Dropping packed because not connected')
+            return
+
         data = raw(packet)
         self._sock.sendall(data)
         self._q[1].task_done()
