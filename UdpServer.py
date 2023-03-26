@@ -7,14 +7,14 @@ Address = tuple[str, int]
 
 
 class UdpServer(BaseClient):
-    def __init__(self, q: QueuePair, listenAddress: Address) -> None:
+    def __init__(self, q: QueuePair, listen_addr: Address) -> None:
         super().__init__()
         self._q = q
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-        self._sock.bind(listenAddress)
-        logging.info(f'Listening on: {listenAddress}')
+        self._sock.bind(listen_addr)
+        logging.info(f'Listening on: {listen_addr}')
 
         self._connected = False
 
