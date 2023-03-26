@@ -14,7 +14,7 @@ class DnsClient(BaseClient):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         self._sock.connect(serverAddress)
-        print(f'Remote host: {serverAddress}')
+        logging.info(f'Remote host: {serverAddress}')
 
     def close(self):
         self._sock.close()
