@@ -24,14 +24,16 @@ def main():
     parser.add_option('--tmask', dest='tmask', default=config.TUN_NETMASK, help='TUN netmask [%default]')
     parser.add_option('--tmtu', dest='tmtu', default=config.TUN_MTU, help='TUN MTU [%default]')
 
-    parser.add_option('--lif', dest='lif', default=config.LOCAL_INTERFACE, help='name of the local interface to use [%default]')
-    parser.add_option('--laddr', dest='laddr', default='0.0.0.0', help='listen address [%default]')
-    parser.add_option('--lport', dest='lport', type='int', default=config.LOCAL_PORT, help='listen port [%default]')
+    parser.add_option('--lif', dest='lif', default=config.LISTEN_INTERFACE, help='name of the interface to listen on [%default]')
+    parser.add_option('--laddr', dest='laddr', default=config.LISTEN_ADDRESS, help='listen address [%default]')
+    parser.add_option('--lport', dest='lport', type='int', default=config.LISTEN_PORT, help='listen port [%default]')
 
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default='udps', help='protocol to use: udpc, udps, dnsc, dnss or icmp [%default]')
+    parser.add_option('--proto', dest='proto', default=config.PROTO, help='protocol to use: udpc, udps, dnsc, dnss or icmp [%default]')
+
+    parser.add_option('--domain', dest='domain', default=config.DOMAIN, help='domain to use for DNS tunneling [%default]')
     opt, args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))
