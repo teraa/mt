@@ -1,12 +1,16 @@
 # mt
+
+## Description
+
 Tunnel IPv4 traffic using ICMP or UDP as transfer protocols.
 Uses TUN/TAP interfaces which only works on linux.
 
 ## Prerequisites
+
 - python 3.11
 - python-venv
 
-## Setup
+## Initial setup
 
 ```sh
 # init venv
@@ -21,15 +25,62 @@ sudo setcap CAP_NET_RAW,CAP_NET_ADMIN=eip $(readlink -f $(which python3.11))
 ```
 
 ## Run
+
 ```sh
-. .venv/bin/activate
+. .venv/bin/activate # once per session
 python . -h
 ```
 
 ## Updating requirements.txt
+
 ```sh
 pip freeze > requirements.txt
 ```
+
+---
+
+## Forward traffic out to the Internet (optional)
+
+### Client side configuration
+
+```sh
+ip route add 0.0.0.0/1 dev mt
+ip route add 128.0.0.0/1 dev mt
+ip route add ${server_ip}/32 via ${gateway} dev ${interface}
+```
+
+- [reference](https://www.wireguard.com/netns/#the-classic-solutions)
+
+#### Find gateway and interface
+
+```sh
+ip r l default
+```
+
+e.g.
+
+> default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100
+
+- gateway: `10.0.2.2` 
+- interface: `enp0s3`
+
+### Server side configuration
+
+#### Allow forwarding connections out to internet
+
+```sh
+iptables -A FORWARD -i mt -j ACCEPT
+```
+
+#### Enable IP forwarding
+
+1. Create `/etc/sysctl.d/local.conf`
+    ```properties
+    net.ipv4.ip_forward=1
+    ```
+2. Reboot or `sysctl --system`
+
+---
 
 <details>
 <summary>Old setup</summary>
