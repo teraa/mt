@@ -31,14 +31,14 @@ def main():
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default=config.PROTO, help='protocol to use: udpc, udps, dnsc, dnss or icmp [%default]')
+    parser.add_option('--mode', dest='mode', default=config.MODE, help='mode (protocol): udpc, udps, dnsc, dnss or icmp [%default]')
 
     parser.add_option('--domain', dest='domain', default=config.DOMAIN, help='domain to use for DNS tunneling [%default]')
     opt, args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))
 
-    match opt.proto:
+    match opt.mode:
         case 'udpc':
             client1 = UdpClient(q, (opt.raddr, opt.rport))
         case 'dnsc':
@@ -51,7 +51,7 @@ def main():
             client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
         case _:
             parser.print_help()
-            parser.error('Invalid --proto value')
+            parser.error('Invalid --mode value')
             return 1
 
     try:
