@@ -1,6 +1,8 @@
 import logging
 import sys
 import optparse
+from DnsClient import DnsClient
+from DnsServer import DnsServer
 import config
 from BaseClient import *
 from TunClient import TunClient
@@ -23,13 +25,13 @@ def main():
     parser.add_option('--tmtu', dest='tmtu', default=config.TUN_MTU, help='TUN MTU [%default]')
 
     parser.add_option('--lif', dest='lif', default=config.LOCAL_INTERFACE, help='name of the local interface to use [%default]')
-    parser.add_option('--laddr', dest='laddr', default='0.0.0.0', help='local address [%default]')
-    parser.add_option('--lport', dest='lport', type='int', default=config.LOCAL_PORT, help='local port [%default]')
+    parser.add_option('--laddr', dest='laddr', default='0.0.0.0', help='listen address [%default]')
+    parser.add_option('--lport', dest='lport', type='int', default=config.LOCAL_PORT, help='listen port [%default]')
 
     parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
     parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
 
-    parser.add_option('--proto', dest='proto', default='udps', help='protocol to use: udpc, udps or icmp [%default]')
+    parser.add_option('--proto', dest='proto', default='udps', help='protocol to use: udpc, udps, dnsc, dnss or icmp [%default]')
     opt, args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))
@@ -37,8 +39,12 @@ def main():
     match opt.proto:
         case 'udpc':
             client1 = UdpClient(q, (opt.raddr, opt.rport))
+        case 'dnsc':
+            client1 = DnsClient(q, (opt.raddr, opt.rport))
         case 'udps':
             client1 = UdpServer(q, (opt.laddr, opt.lport))
+        case 'dnss':
+            client1 = DnsServer(q, (opt.laddr, opt.lport))
         case 'icmp':
             client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
         case _:

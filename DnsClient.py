@@ -1,5 +1,6 @@
 import logging
 import socket
+from scapy.layers.dns import *
 from BaseClient import *
 from utils import socket_guard
 
@@ -24,7 +25,10 @@ class DnsClient(BaseClient):
         data = self._sock.recv(65535)
 
         try:
-            packet: IP = IP(data)
+            dns: DNS = DNS(data)
+            rdata: bytes = dns.an.rdata
+            packet: IP = IP(rdata)
+
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
             return
@@ -34,6 +38,11 @@ class DnsClient(BaseClient):
     @socket_guard
     def _write(self):
         packet = self._q[1].get()
-        data = raw(packet)
+
+        dnsqr = DNSQR(qname='example.org', qtype='NULL')
+        dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
+        dns = DNS(qr=1, qd=dnsqr, an=dnsrr)
+
+        data = raw(dns)
         self._sock.sendall(data)
         self._q[1].task_done()
