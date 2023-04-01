@@ -98,6 +98,7 @@ ip tuntap add dev mt mode tun user tera
 ip address add dev mt 10.20.0.1/24
 ip link set dev mt up
 ip link set dev mt mtu 1500
+ip link set dev mt multicast off
 ```
 
 ### Cleanup
