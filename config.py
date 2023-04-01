@@ -11,4 +11,4 @@ REMOTE_ADDRESS = '192.168.56.106'
 REMOTE_PORT = LISTEN_PORT
 
 MODE = 'udps'
-DOMAIN = 'example.com'
+DOMAIN = 'example.org'

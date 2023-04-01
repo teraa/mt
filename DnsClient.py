@@ -8,7 +8,7 @@ Address = tuple[str, int]
 
 
 class DnsClient(BaseClient):
-    def __init__(self, q: QueuePair, server_addr: Address) -> None:
+    def __init__(self, q: QueuePair, server_addr: Address, domain: str) -> None:
         super().__init__()
         self._q = q
 
@@ -16,6 +16,8 @@ class DnsClient(BaseClient):
 
         self._sock.connect(server_addr)
         logging.info(f'Remote host: {server_addr}')
+
+        self._domain = domain
 
     def close(self):
         self._sock.close()
@@ -39,7 +41,7 @@ class DnsClient(BaseClient):
     def _write(self):
         packet = self._q[1].get()
 
-        dnsqr = DNSQR(qname='example.org', qtype='NULL')
+        dnsqr = DNSQR(qname=self._domain, qtype='NULL')
         dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
         dns = DNS(qr=1, qd=dnsqr, an=dnsrr)
 

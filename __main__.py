@@ -42,11 +42,11 @@ def main():
         case 'udpc':
             client1 = UdpClient(q, (opt.raddr, opt.rport))
         case 'dnsc':
-            client1 = DnsClient(q, (opt.raddr, opt.rport))
+            client1 = DnsClient(q, (opt.raddr, opt.rport), opt.domain)
         case 'udps':
             client1 = UdpServer(q, (opt.laddr, opt.lport))
         case 'dnss':
-            client1 = DnsServer(q, (opt.laddr, opt.lport))
+            client1 = DnsServer(q, (opt.laddr, opt.lport), opt.domain)
         case 'icmp':
             client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
         case _:

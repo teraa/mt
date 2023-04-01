@@ -8,7 +8,7 @@ Address = tuple[str, int]
 
 
 class DnsServer(BaseClient):
-    def __init__(self, q: QueuePair, listen_addr: Address) -> None:
+    def __init__(self, q: QueuePair, listen_addr: Address, domain: str) -> None:
         super().__init__()
         self._q = q
 
@@ -16,6 +16,8 @@ class DnsServer(BaseClient):
 
         self._sock.bind(listen_addr)
         logging.info(f'Listening on: {listen_addr}')
+
+        self._domain = domain
 
         self._connected = False
 
@@ -50,7 +52,7 @@ class DnsServer(BaseClient):
             logging.warn(f'Dropping packed because not connected')
             return
 
-        dnsqr = DNSQR(qname='example.org', qtype='NULL')
+        dnsqr = DNSQR(qname=self._domain, qtype='NULL')
         dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
         dns = DNS(qr=1, qd=dnsqr, an=dnsrr)
 
