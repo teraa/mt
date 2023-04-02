@@ -4,6 +4,8 @@ from math import ceil
 SEGMENT_SIZE = 63
 TOTAL_SIZE = 254
 
+def pad_base32(input: str) -> str:
+    return input + '=' * (-len(input) % 8)
 
 class DnsEncoder(object):
     def __init__(self, domain: str) -> None:
@@ -32,8 +34,8 @@ class DnsEncoder(object):
         return result
 
     def decode(self, names: list[str]) -> bytes:
-        b32 = ''.join([name.rstrip(self.domain).replace('.', '') for name in names])
-        b32 = b32 + '=' * (-len(b32) % 8)
+        b32 = ''.join([n.rstrip(self.domain).replace('.', '') for n in names])
+        b32 = pad_base32(b32)
         data = base64.b32decode(b32)
         return data
 
