@@ -31,15 +31,9 @@ sudo setcap CAP_NET_RAW,CAP_NET_ADMIN=eip $(readlink -f $(which python3.11))
 python . -h
 ```
 
-## Updating requirements.txt
-
-```sh
-pip freeze > requirements.txt
-```
-
 ---
 
-## Forward traffic out to the Internet (optional)
+## Forwarding traffic out to the Internet (optional)
 
 ### Client side configuration
 
@@ -82,8 +76,25 @@ iptables -A FORWARD -i mt -j ACCEPT
 
 ---
 
+### Misc/info
+
+#### Updating requirements.txt
+
+```sh
+pip freeze > requirements.txt
+```
+
+#### Disabling multicast
+
+To reduce noise on the TUN interface, you can disable multicast
+```sh
+ip link set dev mt multicast off
+```
+
+---
+
 <details>
-<summary>Old setup</summary>
+<summary>Old setup (ignore)</summary>
 
 ## Manual TUN Setup (info)
 
