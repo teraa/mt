@@ -20,9 +20,9 @@ def encode(data: bytes) -> list[str]:
 
         for j in range(i, min(i + TOTAL_SIZE, len(b32)), SEGMENT_SIZE):
             k = min(j + SEGMENT_SIZE, i + TOTAL_SIZE, len(b32))
-            name = f'{name}.{b32[j:k].decode()}'
+            name = f'{name}{b32[j:k].decode()}.'
 
-        name = f'{name}.{DOMAIN}'
+        name = f'{name}{DOMAIN}'
 
         result.append(name)
         print(name)
