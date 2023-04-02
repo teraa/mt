@@ -31,6 +31,40 @@ sudo setcap CAP_NET_RAW,CAP_NET_ADMIN=eip $(readlink -f $(which python3.11))
 python . -h
 ```
 
+```
+Options:
+  -h, --help       show this help message and exit
+  --tif=TIF        name of the TUN interface to use [mt]
+  --taddr=TADDR    TUN address [10.20.0.1]
+  --tmask=TMASK    TUN netmask [255.255.255.0]
+  --tmtu=TMTU      TUN MTU [1472]
+  --lif=LIF        name of the interface to listen on [enp0s8]
+  --laddr=LADDR    listen address [0.0.0.0]
+  --lport=LPORT    listen port [50142]
+  --raddr=RADDR    remote address [192.168.56.106]
+  --rport=RPORT    remote port [50142]
+  --mode=MODE      mode (protocol): udpc, udps, dnsc, dnss or icmp [udps]
+  --domain=DOMAIN  domain to use for DNS tunneling [example.org]
+```
+
+### Examples
+```sh
+# ICMP client A
+python . --taddr 10.20.0.1 --mode icmp --lif enp0s8 --raddr 192.168.56.106
+# ICMP client B
+python . --taddr 10.20.0.2 --mode icmp --lif enp0s8 --raddr 192.168.56.105
+
+# UDP client
+python . --taddr 10.20.0.1 --mode udpc --raddr 192.168.56.106
+# UDP server
+python . --taddr 10.20.0.2 --mode udps
+
+# DNS client
+python . --taddr 10.20.0.1 --mode dnsc --raddr 192.168.56.106
+# DNS server
+python . --taddr 10.20.0.2 --mode dnss
+```
+
 ---
 
 ## Forwarding traffic out to the Internet (optional)
