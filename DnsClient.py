@@ -41,9 +41,9 @@ class DnsClient(BaseClient):
     def _write(self):
         packet = self._q[1].get()
 
-        dnsqr = DNSQR(qname=self._domain, qtype='NULL')
-        dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
-        dns = DNS(qr=0, qd=dnsqr, ar=dnsrr, arcount=1)
+        qd = DNSQR(qname=self._domain, qtype='A')
+        ar = DNSRR(type='NULL', rdata=packet)
+        dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
 
         data = raw(dns)
         self._sock.sendall(data)

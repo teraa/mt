@@ -52,9 +52,10 @@ class DnsServer(BaseClient):
             logging.warn(f'Dropping packed because not connected')
             return
 
-        dnsqr = DNSQR(qname=self._domain, qtype='NULL')
-        dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
-        dns = DNS(qr=1, qd=dnsqr, an=dnsrr)
+        qd = DNSQR(qname=self._domain, qtype='A')
+        an = DNSRR(rrname=qd.name, type=qd.qtype, rdata='0.0.0.0')
+        ar = DNSRR(type='NULL', rdata=packet)
+        dns = DNS(qr=1, qd=qd, an=an, ar=ar, arcount=1)
 
         data = raw(dns)
         self._sock.sendall(data)
