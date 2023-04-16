@@ -30,7 +30,7 @@ class DnsServer(BaseClient):
 
         try:
             dns: DNS = DNS(data)
-            rdata: bytes = dns.an.rdata
+            rdata: bytes = dns.ar.rdata
             packet: IP = IP(rdata)
 
             if not self._connected:

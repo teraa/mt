@@ -43,7 +43,7 @@ class DnsClient(BaseClient):
 
         dnsqr = DNSQR(qname=self._domain, qtype='NULL')
         dnsrr = DNSRR(rrname=dnsqr.qname, type=dnsqr.qtype, rdata=packet)
-        dns = DNS(qr=1, qd=dnsqr, an=dnsrr)
+        dns = DNS(qr=0, qd=dnsqr, ar=dnsrr, arcount=1)
 
         data = raw(dns)
         self._sock.sendall(data)
