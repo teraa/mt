@@ -28,7 +28,7 @@ class DnsClient(BaseClient):
 
         try:
             dns: DNS = DNS(data)
-            rdata: bytes = dns.an.rdata
+            rdata: bytes = dns.ar.rdata
             packet: IP = IP(rdata)
 
         except Exception as e:
