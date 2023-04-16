@@ -1,7 +1,7 @@
 import base64
 from math import ceil
 
-SEGMENT_SIZE = 63
+SEGMENT_SIZE = 63 # not 64 because QNAME is prefixed by length
 TOTAL_SIZE = 254
 
 def pad_base32(input: str) -> str:
