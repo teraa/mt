@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--tmask', default='255.255.255.0', help='TUN netmask [%(default)s]')
     parser.add_argument('--tmtu', default=1472, type=int, help='TUN MTU [%(default)s]')
 
-    subparsers = parser.add_subparsers(title='modes', dest='mode')
+    subparsers = parser.add_subparsers(title='modes', dest='mode', required=True)
 
     server_parser = argparse.ArgumentParser(add_help=False)
     server_parser.add_argument('--addr', default='0.0.0.0', help='listen address [%(default)s]')
