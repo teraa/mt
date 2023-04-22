@@ -1,10 +1,9 @@
 import logging
 import socket
 from scapy.layers.dns import *
-from .BaseClient import BaseClient
+from Tunnel import QueuePair
 from utils import socket_guard
-from . import QueuePair
-
+from .BaseClient import BaseClient
 
 Address = tuple[str, int]
 

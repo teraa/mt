@@ -1,9 +1,9 @@
 import logging
 import socket
 from scapy.layers.inet import *
+from Tunnel import QueuePair
 from utils import socket_guard
 from .BaseClient import BaseClient
-from . import QueuePair
 
 
 Address = tuple[str, int]

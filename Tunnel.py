@@ -1,6 +1,9 @@
 import threading
+import scapy.layers.inet as inet
+from queue import Queue
 from Clients.BaseClient import BaseClient
 
+QueuePair = tuple[Queue[inet.IP], Queue[inet.IP]]
 
 class Tunnel(object):
     def __init__(self, client1: BaseClient, client2: BaseClient):

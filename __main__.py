@@ -4,9 +4,7 @@ import sys
 import scapy.layers.inet as inet
 from queue import Queue
 from Clients import *
-import Clients.UDP as _UDP
-import Clients.ICMP as _ICMP
-from Tunnel import Tunnel
+from Tunnel import QueuePair, Tunnel
 from utils import sighandler
 
 
@@ -45,22 +43,22 @@ def main():
     icmp_parser = subparsers.add_parser('icmp', help='ICMP client')
     icmp_parser.add_argument('--lif', default='enp0s8', help='listen interface [%(default)s]')
     icmp_parser.add_argument('--addr', default='192.168.56.106', help='remote address [%(default)s]')
-    
+
     args = parser.parse_args()
 
     q = QueuePair((Queue[inet.IP](), Queue[inet.IP]()))
 
     match args.mode:
         case 'udpc':
-            client1 = _UDP.Client(q, (args.addr, args.port))
+            client1 = UDP.Client(q, (args.addr, args.port))
         case 'udps':
-            client1 = _UDP.Server(q, (args.addr, args.port))
+            client1 = UDP.Server(q, (args.addr, args.port))
         case 'dnsc':
             client1 = DNS.Client(q, (args.addr, args.port), args.domain)
         case 'dnss':
             client1 = DNS.Server(q, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = _ICMP.Client(q, args.lif, args.addr)
+            client1 = ICMP.Client(q, args.lif, args.addr)
 
     try:
         with TUN.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
