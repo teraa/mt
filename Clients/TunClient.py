@@ -1,8 +1,7 @@
 import logging
 import errno
 import pytun
-from scapy.layers.inet import *
-from BaseClient import BaseClient, QueuePair
+from .BaseClient import *
 
 
 class TunClient(BaseClient):

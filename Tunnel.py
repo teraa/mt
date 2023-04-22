@@ -1,5 +1,5 @@
 import threading
-from BaseClient import BaseClient
+from Clients.BaseClient import BaseClient
 
 
 class Tunnel(object):

@@ -1,7 +1,6 @@
 import logging
 import socket
-from scapy.layers.inet import *
-from BaseClient import BaseClient, QueuePair
+from .BaseClient import *
 from utils import socket_guard
 
 Address = str

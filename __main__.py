@@ -3,7 +3,7 @@ import logging
 import sys
 from scapy.layers.inet import *
 from queue import Queue
-from BaseClient import QueuePair
+from Clients.BaseClient import *
 from Clients.DnsClient import DnsClient
 from Clients.DnsServer import DnsServer
 from Clients.TunClient import TunClient
