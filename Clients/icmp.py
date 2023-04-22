@@ -3,7 +3,7 @@ import socket
 from scapy.layers.inet import *
 from tunnel import QueuePair
 from utils import socket_guard
-from .BaseClient import BaseClient
+from .base import Base
 
 
 Address = str
@@ -13,7 +13,7 @@ ETHERTYPE = 0x0800
 # send(IP(dst='f1.lan')/ICMP(type=201)/IP(dst='f1.tun')/ICMP())
 
 
-class Client(BaseClient):
+class Client(Base):
     def __init__(self, q: QueuePair, interface: str, remote: Address) -> None:
         super().__init__()
         self._q = q

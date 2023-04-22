@@ -3,12 +3,12 @@ import socket
 from scapy.layers.dns import *
 from tunnel import QueuePair
 from utils import socket_guard
-from .BaseClient import BaseClient
+from .base import Base
 
 Address = tuple[str, int]
 
 
-class Client(BaseClient):
+class Client(Base):
     def __init__(self, q: QueuePair, server_addr: Address, domain: str) -> None:
         super().__init__()
         self._q = q
@@ -51,7 +51,7 @@ class Client(BaseClient):
         self._q[1].task_done()
 
 
-class Server(BaseClient):
+class Server(Base):
     def __init__(self, q: QueuePair, listen_addr: Address, domain: str) -> None:
         super().__init__()
         self._q = q

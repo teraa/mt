@@ -1,4 +1,4 @@
-class BaseClient(object):
+class Base(object):
     def __init__(self) -> None:
         pass
 

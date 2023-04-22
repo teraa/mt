@@ -3,10 +3,10 @@ import errno
 import pytun
 from scapy.layers.inet import *
 from tunnel import QueuePair
-from .BaseClient import BaseClient
+from .base import Base
 
 
-class Client(BaseClient):
+class Client(Base):
 
     def __init__(self, q: QueuePair, interface: str, address: str, netmask: str, mtu: int):
         super().__init__()
