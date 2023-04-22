@@ -17,7 +17,7 @@ def main():
     logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(module)s.%(funcName)s: %(message)s',
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
-    parser = argparse.ArgumentParser(prog='mt')
+    parser = argparse.ArgumentParser()
     parser.add_argument('--tif', default='mt', help='TUN interface name [%(default)s]', metavar='NAME')
     parser.add_argument('--taddr', default='10.20.0.1', help='TUN address [%(default)s]')
     parser.add_argument('--tmask', default='255.255.255.0', help='TUN netmask [%(default)s]')
