@@ -42,8 +42,7 @@ def main():
 
     icmp_parser = subparsers.add_parser('icmp', help='ICMP client')
     icmp_parser.add_argument('--lif', default='enp0s8', help='listen interface [%(default)s]')
-    icmp_parser.add_argument('--raddr', default='192.168.56.106', help='remote address [%(default)s]')
-    icmp_parser.add_argument('--laddr', default='192.168.56.105', help='local address [%(default)s]')
+    icmp_parser.add_argument('--addr', default='192.168.56.106', help='remote address [%(default)s]')
     
     args = parser.parse_args()
 
@@ -59,10 +58,10 @@ def main():
         case 'dnss':
             client1 = Dns.Server(q, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = Icmp.Client(q, args.lif, args.laddr, args.raddr)
+            client1 = Icmp.Client(q, args.lif, args.addr)
 
     try:
-        with Tun.Client(q, args.tif, args.taddr, args.tmask, args.tmtu, client1) as client2:
+        with Tun.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
             tunnel = Tunnel(client1, client2)
             tunnel.run()
 

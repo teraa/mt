@@ -14,12 +14,11 @@ ETHERTYPE = 0x0800
 
 
 class Client(BaseClient):
-    def __init__(self, q: QueuePair, interface: str, local: Address, remote: Address) -> None:
+    def __init__(self, q: QueuePair, interface: str, remote: Address) -> None:
         super().__init__()
         self._q = q
 
         self._address = (interface, ETHERTYPE)
-        self._local = local
         self._remote = remote
 
         self._sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)

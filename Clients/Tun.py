@@ -8,7 +8,7 @@ from . import QueuePair
 
 class Client(BaseClient):
 
-    def __init__(self, q: QueuePair, interface: str, address: str, netmask: str, mtu: int, client: BaseClient):
+    def __init__(self, q: QueuePair, interface: str, address: str, netmask: str, mtu: int):
         super().__init__()
         self._q = q
 
@@ -20,7 +20,6 @@ class Client(BaseClient):
         tun.up()
 
         self._tun = tun
-        self._client = client
 
     def close(self):
         self._tun.close()
