@@ -1,9 +1,8 @@
+import argparse
 import logging
 import sys
-import optparse
 from DnsClient import DnsClient
 from DnsServer import DnsServer
-import config
 from BaseClient import *
 from TunClient import TunClient
 from UdpClient import UdpClient
@@ -18,44 +17,56 @@ def main():
     logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(module)s.%(funcName)s: %(message)s',
                         level=logging.DEBUG, datefmt='%H:%M:%S')
 
-    parser = optparse.OptionParser()
-    parser.add_option('--tif', dest='tif', default=config.TUN_INTERFACE, help='name of the TUN interface to use [%default]')
-    parser.add_option('--taddr', dest='taddr', default=config.TUN_ADDRESS, help='TUN address [%default]')
-    parser.add_option('--tmask', dest='tmask', default=config.TUN_NETMASK, help='TUN netmask [%default]')
-    parser.add_option('--tmtu', dest='tmtu', default=config.TUN_MTU, help='TUN MTU [%default]')
+    parser = argparse.ArgumentParser(prog='mt')
+    parser.add_argument('--tif', default='mt', help='TUN interface name [%(default)s]', metavar='NAME')
+    parser.add_argument('--taddr', default='10.20.0.1', help='TUN address [%(default)s]')
+    parser.add_argument('--tmask', default='255.255.255.0', help='TUN netmask [%(default)s]')
+    parser.add_argument('--tmtu', default=1472, type=int, help='TUN MTU [%(default)s]')
 
-    parser.add_option('--lif', dest='lif', default=config.LISTEN_INTERFACE, help='name of the interface to listen on [%default]')
-    parser.add_option('--laddr', dest='laddr', default=config.LISTEN_ADDRESS, help='listen address [%default]')
-    parser.add_option('--lport', dest='lport', type='int', default=config.LISTEN_PORT, help='listen port [%default]')
+    subparsers = parser.add_subparsers(title='modes', dest='mode')
 
-    parser.add_option('--raddr', dest='raddr', default=config.REMOTE_ADDRESS, help='remote address [%default]')
-    parser.add_option('--rport', dest='rport', type='int', default=config.REMOTE_PORT, help='remote port [%default]')
+    server_parser = argparse.ArgumentParser(add_help=False)
+    server_parser.add_argument('--addr', default='0.0.0.0', help='listen address [%(default)s]')
+    server_parser.add_argument('--port', default=50142, type=int, help='listen port [%(default)s]')
 
-    parser.add_option('--mode', dest='mode', default=config.MODE, help='mode (protocol): udpc, udps, dnsc, dnss or icmp [%default]')
+    client_parser = argparse.ArgumentParser(add_help=False)
+    client_parser.add_argument('--addr', default='192.168.56.106', help='remote address [%(default)s]')
+    client_parser.add_argument('--port', default=50142, type=int, help='remote port [%(default)s]')
 
-    parser.add_option('--domain', dest='domain', default=config.DOMAIN, help='domain to use for DNS tunneling [%default]')
-    opt, args = parser.parse_args()
+    dns_parser = argparse.ArgumentParser(add_help=False)
+    dns_parser.add_argument('--domain', default='example.org', help='domain to use for DNS tunneling [%(default)s]')
+
+    udpc_parser = subparsers.add_parser('udpc', help='UDP client', parents=[client_parser])
+
+    udps_parser = subparsers.add_parser('udps', help='UDP server', parents=[server_parser])
+
+    dnsc_parser = subparsers.add_parser('dnsc', help='DNS client', parents=[client_parser, dns_parser])
+
+    dnss_parser = subparsers.add_parser('dnss', help='DNS server', parents=[server_parser, dns_parser])
+
+    icmp_parser = subparsers.add_parser('icmp', help='ICMP client')
+    icmp_parser.add_argument('--lif', default='enp0s8', help='listen interface [%(default)s]')
+    icmp_parser.add_argument('--raddr', default='192.168.56.106', help='remote address [%(default)s]')
+    icmp_parser.add_argument('--laddr', default='192.168.56.105', help='local address [%(default)s]')
+    
+    args = parser.parse_args()
 
     q = QueuePair((Queue[IP](), Queue[IP]()))
 
-    match opt.mode:
+    match args.mode:
         case 'udpc':
-            client1 = UdpClient(q, (opt.raddr, opt.rport))
+            client1 = UdpClient(q, (args.addr, args.port))
         case 'dnsc':
-            client1 = DnsClient(q, (opt.raddr, opt.rport), opt.domain)
+            client1 = DnsClient(q, (args.addr, args.port), args.domain)
         case 'udps':
-            client1 = UdpServer(q, (opt.laddr, opt.lport))
+            client1 = UdpServer(q, (args.addr, args.port))
         case 'dnss':
-            client1 = DnsServer(q, (opt.laddr, opt.lport), opt.domain)
+            client1 = DnsServer(q, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = IcmpClient(q, opt.lif, opt.laddr, opt.raddr)
-        case _:
-            parser.print_help()
-            parser.error('Invalid --mode value')
-            return 1
+            client1 = IcmpClient(q, args.lif, args.laddr, args.raddr)
 
     try:
-        with TunClient(q, opt.tif, opt.taddr, opt.tmask, opt.tmtu, client1) as client2:
+        with TunClient(q, args.tif, args.taddr, args.tmask, args.tmtu, client1) as client2:
             tunnel = Tunnel(client1, client2)
             tunnel.run()
 
