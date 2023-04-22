@@ -1,7 +1,7 @@
 import threading
 import scapy.layers.inet as inet
 from queue import Queue
-from Clients.base import Base
+from clients.base import Base
 
 QueuePair = tuple[Queue[inet.IP], Queue[inet.IP]]
 

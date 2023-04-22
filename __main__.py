@@ -3,7 +3,7 @@ import logging
 import sys
 import scapy.layers.inet as inet
 from queue import Queue
-from Clients import *
+from clients import *
 from tunnel import QueuePair, Tunnel
 from utils import sighandler
 
