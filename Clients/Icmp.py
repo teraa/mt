@@ -10,7 +10,7 @@ ETHERTYPE = 0x0800
 # send(IP(dst='f1.lan')/ICMP(type=201)/IP(dst='f1.tun')/ICMP())
 
 
-class IcmpClient(BaseClient):
+class Client(BaseClient):
     def __init__(self, q: QueuePair, interface: str, local: Address, remote: Address) -> None:
         super().__init__()
         self._q = q

@@ -4,7 +4,7 @@ import pytun
 from .BaseClient import *
 
 
-class TunClient(BaseClient):
+class Client(BaseClient):
 
     def __init__(self, q: QueuePair, interface: str, address: str, netmask: str, mtu: int, client: BaseClient):
         super().__init__()
