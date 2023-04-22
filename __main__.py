@@ -1,9 +1,11 @@
 import argparse
 import logging
 import sys
-from scapy.layers.inet import *
+import scapy.layers.inet as inet
 from queue import Queue
 from Clients import *
+import Clients.UDP as _UDP
+import Clients.ICMP as _ICMP
 from Tunnel import Tunnel
 from utils import sighandler
 
@@ -46,22 +48,22 @@ def main():
     
     args = parser.parse_args()
 
-    q = QueuePair((Queue[IP](), Queue[IP]()))
+    q = QueuePair((Queue[inet.IP](), Queue[inet.IP]()))
 
     match args.mode:
         case 'udpc':
-            client1 = Udp.Client(q, (args.addr, args.port))
+            client1 = _UDP.Client(q, (args.addr, args.port))
         case 'udps':
-            client1 = Udp.Server(q, (args.addr, args.port))
+            client1 = _UDP.Server(q, (args.addr, args.port))
         case 'dnsc':
-            client1 = Dns.Client(q, (args.addr, args.port), args.domain)
+            client1 = DNS.Client(q, (args.addr, args.port), args.domain)
         case 'dnss':
-            client1 = Dns.Server(q, (args.addr, args.port), args.domain)
+            client1 = DNS.Server(q, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = Icmp.Client(q, args.lif, args.addr)
+            client1 = _ICMP.Client(q, args.lif, args.addr)
 
     try:
-        with Tun.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
+        with TUN.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
             tunnel = Tunnel(client1, client2)
             tunnel.run()
 
