@@ -7,7 +7,7 @@ TOTAL_SIZE = 254
 def pad_base32(input: str) -> str:
     return input + '=' * (-len(input) % 8)
 
-class DnsEncoder(object):
+class encoder(object):
     def __init__(self, domain: str) -> None:
         domain = domain.rstrip('.') + '.'
         self.domain = domain

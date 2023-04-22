@@ -2,7 +2,7 @@ import logging
 import errno
 import pytun
 from scapy.layers.inet import *
-from Tunnel import QueuePair
+from tunnel import QueuePair
 from .BaseClient import BaseClient
 
 

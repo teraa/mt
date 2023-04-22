@@ -4,7 +4,7 @@ import sys
 import scapy.layers.inet as inet
 from queue import Queue
 from Clients import *
-from Tunnel import QueuePair, Tunnel
+from tunnel import QueuePair, Tunnel
 from utils import sighandler
 
 
@@ -50,18 +50,18 @@ def main():
 
     match args.mode:
         case 'udpc':
-            client1 = UDP.Client(q, (args.addr, args.port))
+            client1 = udp.Client(q, (args.addr, args.port))
         case 'udps':
-            client1 = UDP.Server(q, (args.addr, args.port))
+            client1 = udp.Server(q, (args.addr, args.port))
         case 'dnsc':
-            client1 = DNS.Client(q, (args.addr, args.port), args.domain)
+            client1 = dns.Client(q, (args.addr, args.port), args.domain)
         case 'dnss':
-            client1 = DNS.Server(q, (args.addr, args.port), args.domain)
+            client1 = dns.Server(q, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = ICMP.Client(q, args.lif, args.addr)
+            client1 = icmp.Client(q, args.lif, args.addr)
 
     try:
-        with TUN.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
+        with tun.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
             tunnel = Tunnel(client1, client2)
             tunnel.run()
 

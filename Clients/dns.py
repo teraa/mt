@@ -1,7 +1,7 @@
 import logging
 import socket
 from scapy.layers.dns import *
-from Tunnel import QueuePair
+from tunnel import QueuePair
 from utils import socket_guard
 from .BaseClient import BaseClient
 
