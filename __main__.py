@@ -1,9 +1,11 @@
 import argparse
 import logging
 import sys
+from scapy.layers.inet import *
+from queue import Queue
+from BaseClient import QueuePair
 from DnsClient import DnsClient
 from DnsServer import DnsServer
-from BaseClient import *
 from TunClient import TunClient
 from UdpClient import UdpClient
 from UdpServer import UdpServer
