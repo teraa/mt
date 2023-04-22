@@ -4,12 +4,12 @@ import sys
 from scapy.layers.inet import *
 from queue import Queue
 from BaseClient import QueuePair
-from DnsClient import DnsClient
-from DnsServer import DnsServer
-from TunClient import TunClient
-from UdpClient import UdpClient
-from UdpServer import UdpServer
-from IcmpClient import IcmpClient
+from Clients.DnsClient import DnsClient
+from Clients.DnsServer import DnsServer
+from Clients.TunClient import TunClient
+from Clients.UdpClient import UdpClient
+from Clients.UdpServer import UdpServer
+from Clients.IcmpClient import IcmpClient
 from Tunnel import Tunnel
 from utils import sighandler
 
