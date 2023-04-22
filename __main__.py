@@ -4,7 +4,7 @@ import sys
 from scapy.layers.inet import *
 from queue import Queue
 from Clients import Dns, Icmp, Tun, Udp
-from Clients.BaseClient import QueuePair
+from Clients import QueuePair
 from Tunnel import Tunnel
 from utils import sighandler
 

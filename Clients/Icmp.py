@@ -1,7 +1,10 @@
 import logging
 import socket
-from .BaseClient import *
+from scapy.layers.inet import *
+from .BaseClient import BaseClient
 from utils import socket_guard
+from . import QueuePair
+
 
 Address = str
 ICMP_TYPE = 201
