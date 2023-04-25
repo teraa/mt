@@ -1,4 +1,5 @@
 import logging
+from queue import Empty
 import socket
 from scapy.layers.dns import *
 from tunnel import QueuePair
@@ -29,6 +30,11 @@ class Client(Base):
 
         try:
             dns: DNS = DNS(data)
+
+            if not dns.ar:
+                logging.debug('Pong')
+                return True
+
             rdata: bytes = dns.ar.rdata
             packet: IP = IP(rdata)
 
@@ -41,11 +47,16 @@ class Client(Base):
 
     @socket_guard
     def _write(self):
-        packet = self._q[1].get()
 
         qd = DNSQR(qname=self._domain, qtype='A')
-        ar = DNSRR(type='NULL', rdata=packet)
-        dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
+
+        try:
+            packet = self._q[1].get(timeout=10)
+            ar = DNSRR(type='NULL', rdata=packet)
+            dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
+        except Empty:
+            logging.debug('Ping')
+            dns = DNS(qr=0, qd=qd)
 
         data = raw(dns)
         self._sock.sendall(data)
@@ -77,8 +88,13 @@ class Server(Base):
 
         try:
             dns: DNS = DNS(data)
-            rdata: bytes = dns.ar.rdata
-            packet: IP = IP(rdata)
+
+            if dns.ar:
+                rdata: bytes = dns.ar.rdata
+                packet = IP(rdata)
+            else:
+                logging.debug('Ping')
+                packet = None
 
             if not self._connected:
                 self._sock.connect(addr)
@@ -101,9 +117,14 @@ class Server(Base):
             return True
 
         qd = DNSQR(qname=self._domain, qtype='A')
-        an = DNSRR(rrname=qd.name, type=qd.qtype, rdata='0.0.0.0')
-        ar = DNSRR(type='NULL', rdata=packet)
-        dns = DNS(qr=1, qd=qd, an=an, ar=ar, arcount=1)
+
+        if packet:
+            an = DNSRR(rrname=qd.name, type=qd.qtype, rdata='0.0.0.0')
+            ar = DNSRR(type='NULL', rdata=packet)
+            dns = DNS(qr=1, qd=qd, an=an, ar=ar, arcount=1)
+        else:
+            logging.debug('Pong')
+            dns = DNS(qr=1, qd=qd, rcode=3)
 
         data = raw(dns)
         self._sock.sendall(data)

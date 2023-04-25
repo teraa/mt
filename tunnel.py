@@ -3,7 +3,7 @@ import scapy.layers.inet as inet
 from queue import Queue
 from clients.base import Base
 
-QueuePair = tuple[Queue[inet.IP], Queue[inet.IP]]
+QueuePair = tuple[Queue[inet.IP | None], Queue[inet.IP | None]]
 
 class Tunnel(object):
     def __init__(self, client1: Base, client2: Base):
