@@ -64,7 +64,7 @@ class Client(Base):
 
         if not timeout:
             self._q[1].task_done()
-            
+
         return True
 
 
@@ -95,9 +95,10 @@ class Server(Base):
             if dns.ar:
                 rdata: bytes = dns.ar.rdata
                 packet = IP(rdata)
+                self._q[0].put(packet)
             else:
                 logging.debug('Ping')
-                packet = None
+                self._q[1].put(None)
 
             if not self._connected:
                 self._sock.connect(addr)
@@ -106,9 +107,7 @@ class Server(Base):
 
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
-            return True
 
-        self._q[0].put(packet)
         return True
 
     @socket_guard
