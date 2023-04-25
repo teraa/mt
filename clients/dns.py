@@ -34,9 +34,10 @@ class Client(Base):
 
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
-            return
+            return True
 
         self._q[0].put(packet)
+        return True
 
     @socket_guard
     def _write(self):
@@ -49,6 +50,8 @@ class Client(Base):
         data = raw(dns)
         self._sock.sendall(data)
         self._q[1].task_done()
+
+        return True
 
 
 class Server(Base):
@@ -84,9 +87,10 @@ class Server(Base):
 
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
-            return
+            return True
 
         self._q[0].put(packet)
+        return True
 
     @socket_guard
     def _write(self):
@@ -94,7 +98,7 @@ class Server(Base):
 
         if not self._connected:
             logging.warn(f'Dropping packed because not connected')
-            return
+            return True
 
         qd = DNSQR(qname=self._domain, qtype='A')
         an = DNSRR(rrname=qd.name, type=qd.qtype, rdata='0.0.0.0')
@@ -104,3 +108,4 @@ class Server(Base):
         data = raw(dns)
         self._sock.sendall(data)
         self._q[1].task_done()
+        return True

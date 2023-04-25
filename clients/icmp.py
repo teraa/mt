@@ -36,26 +36,27 @@ class Client(Base):
         ether = Ether(data)
 
         if ICMP not in ether:
-            return
+            return True
 
         ip: IP = ether[IP]
         if ip.src != self._remote:
             logging.debug(f'Drop packet from {ip.src}')
-            return
+            return True
 
         icmp: ICMP = ip[ICMP]
         if icmp.type != ICMP_TYPE:
             logging.debug(f'Drop ICMP type {icmp.type}')
-            return
+            return True
 
         inner_ip_raw = raw(icmp.payload)
         try:
             inner_ip: IP = IP(inner_ip_raw)
         except Exception as e:
             logging.warn(f'Error unpacking ICMP payload: {str(e)}')
-            return
+            return True
 
         self._q[0].put(inner_ip)
+        return True
 
     @socket_guard
     def _write(self):
@@ -63,3 +64,4 @@ class Client(Base):
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
         self._sock.sendto(raw(frame), self._address)
         self._q[1].task_done()
+        return True

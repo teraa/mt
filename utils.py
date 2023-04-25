@@ -14,10 +14,9 @@ def sighandler():
 
 
 def socket_guard(func):
-    def socket_guard(*args):
+    def fun(*args):
         try:
-            func(*args)
-            return True
+            return func(*args)
 
         except OSError as e:
             if e.errno == errno.EINTR:  # interrupt
@@ -28,4 +27,4 @@ def socket_guard(func):
             logging.exception(e)
             raise
 
-    return socket_guard
+    return fun
