@@ -55,13 +55,16 @@ class Client(Base):
             ar = DNSRR(type='NULL', rdata=packet)
             dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
         except Empty:
+            timeout = True
             logging.debug('Ping')
             dns = DNS(qr=0, qd=qd)
 
         data = raw(dns)
         self._sock.sendall(data)
-        self._q[1].task_done()
 
+        if not timeout:
+            self._q[1].task_done()
+            
         return True
 
 
