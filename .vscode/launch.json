@@ -18,7 +18,12 @@
             "request": "launch",
             "program": ".",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "args": [
+                "dnsc",
+                "--addr",
+                "192.168.56.106"
+            ]
         }
     ]
 }
