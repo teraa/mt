@@ -37,6 +37,7 @@ def main():
     udps_parser = subparsers.add_parser('udps', help='UDP server', parents=[server_parser])
 
     dnsc_parser = subparsers.add_parser('dnsc', help='DNS client', parents=[client_parser, dns_parser])
+    dnsc_parser.add_argument('--keepalive', default=10, type=float, help='Keep-alive polling interval in seconds, or 0 to disable [%(default)s]')
 
     dnss_parser = subparsers.add_parser('dnss', help='DNS server', parents=[server_parser, dns_parser])
 
@@ -54,7 +55,7 @@ def main():
         case 'udps':
             client1 = udp.Server(q, (args.addr, args.port))
         case 'dnsc':
-            client1 = dns.Client(q, (args.addr, args.port), args.domain)
+            client1 = dns.Client(q, (args.addr, args.port), args.domain, args.keepalive)
         case 'dnss':
             client1 = dns.Server(q, (args.addr, args.port), args.domain)
         case 'icmp':

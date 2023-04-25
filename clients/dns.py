@@ -10,7 +10,7 @@ Address = tuple[str, int]
 
 
 class Client(Base):
-    def __init__(self, q: QueuePair, server_addr: Address, domain: str) -> None:
+    def __init__(self, q: QueuePair, server_addr: Address, domain: str, keepalive: float) -> None:
         super().__init__()
         self._q = q
 
@@ -20,6 +20,7 @@ class Client(Base):
         logging.info(f'Remote host: {server_addr}')
 
         self._domain = domain
+        self._keepalive = keepalive or None
 
     def close(self):
         self._sock.close()
@@ -51,7 +52,7 @@ class Client(Base):
         qd = DNSQR(qname=self._domain, qtype='A')
 
         try:
-            packet = self._q[1].get(timeout=10)
+            packet = self._q[1].get(timeout=self._keepalive)
             ar = DNSRR(type='NULL', rdata=packet)
             dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
         except Empty:
