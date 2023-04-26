@@ -32,15 +32,15 @@ class Client(Base):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return True
 
-        self._q[0].put(packet)
+        self._q.wire.put(packet)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q[1].get()
+        packet = self._q.virt.get()
         data = raw(packet)
         self._sock.sendall(data)
-        self._q[1].task_done()
+        self._q.virt.task_done()
         return True
 
 
@@ -75,12 +75,12 @@ class Server(Base):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return True
 
-        self._q[0].put(packet)
+        self._q.wire.put(packet)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q[1].get()
+        packet = self._q.virt.get()
 
         if not self._connected:
             logging.warn(f'Dropping packed because not connected')
@@ -88,5 +88,5 @@ class Server(Base):
 
         data = raw(packet)
         self._sock.sendall(data)
-        self._q[1].task_done()
+        self._q.virt.task_done()
         return True

@@ -4,10 +4,11 @@ from queue import Queue
 from mt.clients.base import Base
 
 NetworkQueue = Queue[inet.IP | None]
-NetworkPipe = tuple[NetworkQueue, NetworkQueue]
 
-def create_pipe():
-    return NetworkPipe((NetworkQueue(), NetworkQueue()))
+class NetworkPipe(object):
+    def __init__(self) -> None:
+        self.virt = NetworkQueue()
+        self.wire = NetworkQueue()
 
 class Tunnel(object):
     def __init__(self, client1: Base, client2: Base):

@@ -55,13 +55,13 @@ class Client(Base):
             logging.warn(f'Error unpacking ICMP payload: {str(e)}')
             return True
 
-        self._q[0].put(inner_ip)
+        self._q.wire.put(inner_ip)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q[1].get()
+        packet = self._q.virt.get()
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
         self._sock.sendto(raw(frame), self._address)
-        self._q[1].task_done()
+        self._q.virt.task_done()
         return True

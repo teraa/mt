@@ -57,12 +57,12 @@ class Client(Base):
             return
 
         logging.debug(packet)
-        self._q[1].put(packet)
+        self._q.virt.put(packet)
 
     @tun_guard
     def _write(self):
-        packet = self._q[0].get()
+        packet = self._q.wire.get()
 
         self._tun.write(raw(packet))
         logging.debug(packet)
-        self._q[0].task_done()
+        self._q.wire.task_done()

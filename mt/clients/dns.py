@@ -43,7 +43,7 @@ class Client(Base):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return True
 
-        self._q[0].put(packet)
+        self._q.wire.put(packet)
         return True
 
     @socket_guard
@@ -52,7 +52,7 @@ class Client(Base):
         qd = DNSQR(qname=self._domain, qtype='A')
 
         try:
-            packet = self._q[1].get(timeout=self._keepalive)
+            packet = self._q.virt.get(timeout=self._keepalive)
             ar = DNSRR(type='NULL', rdata=packet)
             dns = DNS(qr=0, qd=qd, ar=ar, arcount=1)
         except Empty:
@@ -64,7 +64,7 @@ class Client(Base):
         self._sock.sendall(data)
 
         if not timeout:
-            self._q[1].task_done()
+            self._q.virt.task_done()
 
         return True
 
@@ -96,10 +96,10 @@ class Server(Base):
             if dns.ar:
                 rdata: bytes = dns.ar.rdata
                 packet = IP(rdata)
-                self._q[0].put(packet)
+                self._q.wire.put(packet)
             else:
                 logging.debug('Ping')
-                self._q[1].put(None)
+                self._q.virt.put(None)
 
             if not self._connected:
                 self._sock.connect(addr)
@@ -113,7 +113,7 @@ class Server(Base):
 
     @socket_guard
     def _write(self):
-        packet = self._q[1].get()
+        packet = self._q.virt.get()
 
         if not self._connected:
             logging.warn(f'Dropping packed because not connected')
@@ -131,5 +131,5 @@ class Server(Base):
 
         data = raw(dns)
         self._sock.sendall(data)
-        self._q[1].task_done()
+        self._q.virt.task_done()
         return True
