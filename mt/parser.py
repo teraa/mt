@@ -2,7 +2,7 @@ import argparse
 
 
 def create_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser('mt')
     parser.add_argument('--tif', default='mt', help='TUN interface name [%(default)s]', metavar='NAME')
     parser.add_argument('--taddr', default='10.20.0.1', help='TUN address [%(default)s]')
     parser.add_argument('--tmask', default='255.255.255.0', help='TUN netmask [%(default)s]')

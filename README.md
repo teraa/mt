@@ -27,44 +27,32 @@ sudo setcap CAP_NET_RAW,CAP_NET_ADMIN=eip $(readlink -f $(which python3.11))
 ## Run
 
 ```sh
-. .venv/bin/activate # once per session
-python . -h
+# once per session
+. .venv/bin/activate
+alias mt='python -m mt'
+
+mt -h
 ```
 
-```
-options:
-  -h, --help            show this help message and exit
-  --tif NAME            TUN interface name [mt]
-  --taddr TADDR         TUN address [10.20.0.1]
-  --tmask TMASK         TUN netmask [255.255.255.0]
-  --tmtu TMTU           TUN MTU [1472]
-
-modes:
-  {udpc,udps,dnsc,dnss,icmp}
-    udpc                UDP client
-    udps                UDP server
-    dnsc                DNS client
-    dnss                DNS server
-    icmp                ICMP client
-```
+See [USAGE.txt](USAGE.txt) for the list of all options
 
 ### Examples
 
 ```sh
 # ICMP client A
-python . --taddr 10.20.0.1 icmp --lif enp0s8 --raddr 192.168.56.106
+mt --taddr 10.20.0.1 icmp --lif enp0s8 --raddr 192.168.56.106
 # ICMP client B
-python . --taddr 10.20.0.2 icmp --lif enp0s8 --raddr 192.168.56.105
+mt --taddr 10.20.0.2 icmp --lif enp0s8 --raddr 192.168.56.105
 
 # UDP client
-python . --taddr 10.20.0.1 udpc --addr 192.168.56.106
+mt --taddr 10.20.0.1 udpc --addr 192.168.56.106
 # UDP server
-python . --taddr 10.20.0.2 udps
+mt --taddr 10.20.0.2 udps
 
 # DNS client
-python . --taddr 10.20.0.1 dnsc --addr 192.168.56.106
+mt --taddr 10.20.0.1 dnsc --addr 192.168.56.106
 # DNS server
-python . --taddr 10.20.0.2 dnss
+mt --taddr 10.20.0.2 dnss
 ```
 
 ---

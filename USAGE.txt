@@ -1,0 +1,94 @@
+NAME
+       mt
+
+SYNOPSIS
+       mt [-h] [--tif NAME] [--taddr TADDR] [--tmask TMASK] [--tmtu TMTU] {udpc,udps,dnsc,dnss,icmp} ...
+
+OPTIONS
+       --tif NAME
+              TUN interface name [mt]
+
+       --taddr TADDR
+              TUN address [10.20.0.1]
+
+       --tmask TMASK
+              TUN netmask [255.255.255.0]
+
+       --tmtu TMTU
+              TUN MTU [1472]
+
+MODES
+   mt udpc
+       UDP client
+
+       usage: mt udpc [-h] [--addr ADDR] [--port PORT]
+
+       options:
+
+              --addr ADDR
+                     remote address [192.168.56.106]
+
+              --port PORT
+                     remote port [50142]
+
+   mt udps
+       UDP server
+
+       usage: mt udps [-h] [--addr ADDR] [--port PORT]
+
+       options:
+
+              --addr ADDR
+                     listen address [0.0.0.0]
+
+              --port PORT
+                     listen port [50142]
+
+   mt dnsc
+       DNS client
+
+       usage: mt dnsc [-h] [--addr ADDR] [--port PORT] [--domain DOMAIN]
+                      [--keepalive KEEPALIVE]
+
+       options:
+
+              --addr ADDR
+                     remote address [192.168.56.106]
+
+              --port PORT
+                     remote port [50142]
+
+              --domain DOMAIN
+                     domain to use for DNS tunneling [example.org]
+
+              --keepalive KEEPALIVE
+                     Keep-alive polling interval in seconds, or 0 to disable [10]
+
+   mt dnss
+       DNS server
+
+       usage: mt dnss [-h] [--addr ADDR] [--port PORT] [--domain DOMAIN]
+
+       options:
+
+              --addr ADDR
+                     listen address [0.0.0.0]
+
+              --port PORT
+                     listen port [50142]
+
+              --domain DOMAIN
+                     domain to use for DNS tunneling [example.org]
+
+   mt icmp
+       ICMP client
+
+       usage: mt icmp [-h] [--lif LIF] [--addr ADDR]
+
+       options:
+
+              --lif LIF
+                     listen interface [enp0s8]
+
+              --addr ADDR
+                     remote address [192.168.56.106]
