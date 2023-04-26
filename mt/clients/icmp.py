@@ -1,7 +1,7 @@
 import logging
 import socket
 from scapy.layers.inet import *
-from mt.tunnel import QueuePair
+from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
 from mt.clients.base import Base
 
@@ -14,7 +14,7 @@ ETHERTYPE = 0x0800
 
 
 class Client(Base):
-    def __init__(self, q: QueuePair, interface: str, remote: Address) -> None:
+    def __init__(self, q: NetworkPipe, interface: str, remote: Address) -> None:
         super().__init__()
         self._q = q
 

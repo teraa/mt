@@ -2,13 +2,13 @@ import logging
 import errno
 import pytun
 from scapy.layers.inet import *
-from mt.tunnel import QueuePair
+from mt.tunnel import NetworkPipe
 from mt.clients.base import Base
 
 
 class Client(Base):
 
-    def __init__(self, q: QueuePair, interface: str, address: str, netmask: str, mtu: int):
+    def __init__(self, q: NetworkPipe, interface: str, address: str, netmask: str, mtu: int):
         super().__init__()
         self._q = q
 

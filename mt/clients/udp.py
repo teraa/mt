@@ -1,7 +1,7 @@
 import logging
 import socket
 from scapy.layers.inet import *
-from mt.tunnel import QueuePair
+from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
 from mt.clients.base import Base
 
@@ -10,7 +10,7 @@ Address = tuple[str, int]
 
 
 class Client(Base):
-    def __init__(self, q: QueuePair, server_addr: Address) -> None:
+    def __init__(self, q: NetworkPipe, server_addr: Address) -> None:
         super().__init__()
         self._q = q
 
@@ -45,7 +45,7 @@ class Client(Base):
 
 
 class Server(Base):
-    def __init__(self, q: QueuePair, listen_addr: Address) -> None:
+    def __init__(self, q: NetworkPipe, listen_addr: Address) -> None:
         super().__init__()
         self._q = q
 
