@@ -2,8 +2,8 @@ import logging
 import errno
 import pytun
 from scapy.layers.inet import *
-from tunnel import QueuePair
-from .base import Base
+from mt.tunnel import QueuePair
+from mt.clients.base import Base
 
 
 class Client(Base):
