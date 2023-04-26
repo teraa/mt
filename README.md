@@ -61,6 +61,21 @@ mt --taddr 10.20.0.2 dnss
 
 ### Client side configuration
 
+<details>
+<summary>How to find gateway address and interface</summary>
+
+```sh
+ip r l default
+```
+
+example output:
+
+> default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100
+
+- gateway: `10.0.2.2` 
+- interface: `enp0s3`
+</details>
+
 ```sh
 ip route add 0.0.0.0/1 dev mt
 ip route add 128.0.0.0/1 dev mt
@@ -68,19 +83,6 @@ ip route add ${server_ip}/32 via ${gateway} dev ${interface}
 ```
 
 - [reference](https://www.wireguard.com/netns/#the-classic-solutions)
-
-#### Find gateway and interface
-
-```sh
-ip r l default
-```
-
-e.g.
-
-> default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100
-
-- gateway: `10.0.2.2` 
-- interface: `enp0s3`
 
 ### Server side configuration
 
@@ -96,7 +98,7 @@ iptables -A FORWARD -i mt -j ACCEPT
     ```properties
     net.ipv4.ip_forward=1
     ```
-2. Reboot or `sysctl --system`
+2. `sysctl --system` or reboot
 
 ---
 
