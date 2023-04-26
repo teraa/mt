@@ -14,7 +14,7 @@ def sighandler():
 
 
 def socket_guard(func):
-    def fun(*args):
+    def _(*args):
         try:
             return func(*args)
 
@@ -27,4 +27,4 @@ def socket_guard(func):
             logging.exception(e)
             raise
 
-    return fun
+    return _
