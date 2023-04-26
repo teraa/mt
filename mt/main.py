@@ -1,9 +1,8 @@
 import scapy.layers.inet as inet
 import logging
-from queue import Queue
 from mt.parser import create_parser
 from mt.clients import dns, icmp, tun, udp
-from mt.tunnel import QueuePair, Tunnel
+from mt.tunnel import Tunnel, create_queue_pair
 from mt.utils import sighandler
 
 
@@ -15,7 +14,7 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
-    q = QueuePair((Queue[inet.IP](), Queue[inet.IP]()))
+    q = create_queue_pair()
 
     match args.mode:
         case 'udpc':

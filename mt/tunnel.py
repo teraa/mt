@@ -5,6 +5,9 @@ from mt.clients.base import Base
 
 QueuePair = tuple[Queue[inet.IP | None], Queue[inet.IP | None]]
 
+def create_queue_pair():
+    return QueuePair((Queue[inet.IP](), Queue[inet.IP]()))
+
 class Tunnel(object):
     def __init__(self, client1: Base, client2: Base):
         self.client1 = client1
