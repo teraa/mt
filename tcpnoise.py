@@ -3,11 +3,11 @@ import optparse
 import socket
 import threading
 import time
-import utils
+from mt.utils import sighandler
 
 
 def main():
-    utils.sighandler()
+    sighandler()
     logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = optparse.OptionParser()
