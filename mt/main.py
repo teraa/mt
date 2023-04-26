@@ -14,22 +14,22 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
-    q = NetworkPipe()
+    pipe = NetworkPipe()
 
     match args.mode:
         case 'udpc':
-            client1 = udp.Client(q, (args.addr, args.port))
+            client1 = udp.Client(pipe, (args.addr, args.port))
         case 'udps':
-            client1 = udp.Server(q, (args.addr, args.port))
+            client1 = udp.Server(pipe, (args.addr, args.port))
         case 'dnsc':
-            client1 = dns.Client(q, (args.addr, args.port), args.domain, args.keepalive)
+            client1 = dns.Client(pipe, (args.addr, args.port), args.domain, args.keepalive)
         case 'dnss':
-            client1 = dns.Server(q, (args.addr, args.port), args.domain)
+            client1 = dns.Server(pipe, (args.addr, args.port), args.domain)
         case 'icmp':
-            client1 = icmp.Client(q, args.lif, args.addr)
+            client1 = icmp.Client(pipe, args.lif, args.addr)
 
     try:
-        with tun.Client(q, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
+        with tun.Client(pipe, args.tif, args.taddr, args.tmask, args.tmtu) as client2:
             tunnel = Tunnel(client1, client2)
             tunnel.run()
 

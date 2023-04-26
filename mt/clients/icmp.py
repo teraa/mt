@@ -14,9 +14,9 @@ ETHERTYPE = 0x0800
 
 
 class Client(Base):
-    def __init__(self, q: NetworkPipe, interface: str, remote: Address) -> None:
+    def __init__(self, pipe: NetworkPipe, interface: str, remote: Address) -> None:
         super().__init__()
-        self._q = q
+        self._pipe = pipe
 
         self._address = (interface, ETHERTYPE)
         self._remote = remote
@@ -55,13 +55,13 @@ class Client(Base):
             logging.warn(f'Error unpacking ICMP payload: {str(e)}')
             return True
 
-        self._q.wire.put(inner_ip)
+        self._pipe.wire.put(inner_ip)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q.virt.get()
+        packet = self._pipe.virt.get()
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
         self._sock.sendto(raw(frame), self._address)
-        self._q.virt.task_done()
+        self._pipe.virt.task_done()
         return True

@@ -8,9 +8,9 @@ from mt.clients.base import Base
 
 class Client(Base):
 
-    def __init__(self, q: NetworkPipe, interface: str, address: str, netmask: str, mtu: int):
+    def __init__(self, pipe: NetworkPipe, interface: str, address: str, netmask: str, mtu: int):
         super().__init__()
-        self._q = q
+        self._pipe = pipe
 
         tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         tun.addr = address
@@ -57,12 +57,12 @@ class Client(Base):
             return
 
         logging.debug(packet)
-        self._q.virt.put(packet)
+        self._pipe.virt.put(packet)
 
     @tun_guard
     def _write(self):
-        packet = self._q.wire.get()
+        packet = self._pipe.wire.get()
 
         self._tun.write(raw(packet))
         logging.debug(packet)
-        self._q.wire.task_done()
+        self._pipe.wire.task_done()

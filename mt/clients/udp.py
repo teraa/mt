@@ -10,9 +10,9 @@ Address = tuple[str, int]
 
 
 class Client(Base):
-    def __init__(self, q: NetworkPipe, server_addr: Address) -> None:
+    def __init__(self, pipe: NetworkPipe, server_addr: Address) -> None:
         super().__init__()
-        self._q = q
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -32,22 +32,22 @@ class Client(Base):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return True
 
-        self._q.wire.put(packet)
+        self._pipe.wire.put(packet)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q.virt.get()
+        packet = self._pipe.virt.get()
         data = raw(packet)
         self._sock.sendall(data)
-        self._q.virt.task_done()
+        self._pipe.virt.task_done()
         return True
 
 
 class Server(Base):
-    def __init__(self, q: NetworkPipe, listen_addr: Address) -> None:
+    def __init__(self, pipe: NetworkPipe, listen_addr: Address) -> None:
         super().__init__()
-        self._q = q
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -75,12 +75,12 @@ class Server(Base):
             logging.warn(f'Error unpacking payload: {str(e)}')
             return True
 
-        self._q.wire.put(packet)
+        self._pipe.wire.put(packet)
         return True
 
     @socket_guard
     def _write(self):
-        packet = self._q.virt.get()
+        packet = self._pipe.virt.get()
 
         if not self._connected:
             logging.warn(f'Dropping packed because not connected')
@@ -88,5 +88,5 @@ class Server(Base):
 
         data = raw(packet)
         self._sock.sendall(data)
-        self._q.virt.task_done()
+        self._pipe.virt.task_done()
         return True
