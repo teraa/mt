@@ -50,6 +50,7 @@ class Client(Base):
     def _write(self):
 
         qd = DNSQR(qname=self._domain, qtype='A')
+        timeout = False
 
         try:
             packet = self._pipe.virt.get(timeout=self._keepalive)
