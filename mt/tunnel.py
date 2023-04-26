@@ -1,14 +1,12 @@
 import threading
-import scapy.layers.inet as inet
+from scapy.layers.inet import IP
 from queue import Queue
 from mt.clients.base import Base
 
-NetworkQueue = Queue[inet.IP | None]
-
 class NetworkPipe(object):
     def __init__(self) -> None:
-        self.virt = NetworkQueue()
-        self.wire = NetworkQueue()
+        self.virt = Queue[IP | None]()
+        self.wire = Queue[IP]()
 
 class Tunnel(object):
     def __init__(self, client1: Base, client2: Base):
