@@ -1,14 +1,16 @@
-from loguru import logger as logging
 import optparse
+import signal
 import socket
 import threading
 import time
+
+from loguru import logger as logging
+
 from mt.utils import sighandler
 
 
 def main():
-    sighandler()
-    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(message)s', level=logging.DEBUG, datefmt='%H:%M:%S')
+    signal.signal(signal.SIGINT, sighandler)
 
     parser = optparse.OptionParser()
     parser.add_option('-p', dest='port', type='int', default=55555, help='server port [%default]')

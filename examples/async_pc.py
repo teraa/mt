@@ -25,7 +25,7 @@ async def consumer():
 
 
 async def main():
-    sighandler.register();
+    sighandler.register()
 
     async with asyncio.TaskGroup() as tg:
         tg.create_task(producer())

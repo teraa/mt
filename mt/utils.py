@@ -7,13 +7,13 @@ import threading
 from loguru import logger as logging
 
 
-def _handler(sig, frame):
+def sighandler(sig, frame):
     print('\nExiting...')
     sys.exit(0)
 
 
-def sighandler():
-    return signal.signal(signal.SIGINT, _handler)
+def register_sighandler():
+    return signal.signal(signal.SIGINT, sighandler)
 
 def excepthook(args: threading.ExceptHookArgs):
     logging.exception(args.exc_value)
