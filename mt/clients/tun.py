@@ -36,7 +36,6 @@ class Client(Base):
                 if e[0] == errno.EINTR:
                     return True
 
-                logging.exception(e)
                 raise
 
         return tun_guard

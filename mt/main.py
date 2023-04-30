@@ -1,11 +1,13 @@
+import threading
 from mt.clients import dns, icmp, tun, udp
 from mt.parser import create_parser
 from mt.tunnel import NetworkPipe, Tunnel
-from mt.utils import sighandler
+from mt.utils import excepthook, sighandler
 
 
 def main():
     sighandler()
+    threading.excepthook = excepthook
 
     parser = create_parser()
     args = parser.parse_args()

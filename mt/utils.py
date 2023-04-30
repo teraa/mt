@@ -1,6 +1,8 @@
 import errno
+import os
 import signal
 import sys
+import threading
 
 from loguru import logger as logging
 
@@ -13,6 +15,9 @@ def _handler(sig, frame):
 def sighandler():
     return signal.signal(signal.SIGINT, _handler)
 
+def excepthook(args: threading.ExceptHookArgs):
+    logging.exception(args.exc_value)
+    os._exit(1)
 
 def socket_guard(func):
     def _(*args):
@@ -25,7 +30,6 @@ def socket_guard(func):
             if e.errno == errno.EBADF:  # exiting
                 return False
 
-            logging.exception(e)
             raise
 
     return _
