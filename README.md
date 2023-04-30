@@ -117,6 +117,12 @@ To reduce noise on the TUN interface, you can disable multicast
 ip link set dev mt multicast off
 ```
 
+#### Generate manpage
+
+```sh
+argparse-manpage --pyfile mt/parser.py --function create_parser --format single-commands-section | man -l -
+```
+
 ---
 
 <details>
