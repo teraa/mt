@@ -25,10 +25,10 @@ class Tunnel(object):
             (self.client2.writer, f'{type(self.client2).__name__} Writer')
         ]
 
-        for target in targets:
-            t = threading.Thread(target=target[0], name=target[1], daemon=True)
-            t.start()
-            threads.append(t)
+        threads = [threading.Thread(target=target[0], name=target[1], daemon=True) for target in targets]
+
+        for thread in threads:
+            thread.start()
 
         for t in threads:
             t.join()
