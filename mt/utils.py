@@ -20,7 +20,7 @@ def excepthook(args: threading.ExceptHookArgs):
     os._exit(1)
 
 def socket_guard(func):
-    def _(*args):
+    def guard(*args):
         try:
             return func(*args)
 
@@ -32,4 +32,4 @@ def socket_guard(func):
 
             raise
 
-    return _
+    return guard
