@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 import errno
 import pytun
 from scapy.layers.inet import *

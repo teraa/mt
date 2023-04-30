@@ -1,5 +1,5 @@
 import errno
-import logging
+from loguru import logger as logging
 import signal
 import sys
 

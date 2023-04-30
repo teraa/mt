@@ -1,5 +1,5 @@
 import scapy.layers.inet as inet
-import logging
+from loguru import logger as logging
 from mt.parser import create_parser
 from mt.clients import dns, icmp, tun, udp
 from mt.tunnel import NetworkPipe, Tunnel
@@ -8,8 +8,6 @@ from mt.utils import sighandler
 
 def main():
     sighandler()
-    logging.basicConfig(format='[%(asctime)s.%(msecs)03d %(levelname)s] %(module)s.%(funcName)s: %(message)s',
-                        level=logging.DEBUG, datefmt='%H:%M:%S')
 
     parser = create_parser()
     args = parser.parse_args()

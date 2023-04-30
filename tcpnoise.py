@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 import optparse
 import socket
 import threading

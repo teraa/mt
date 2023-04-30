@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 from queue import Empty
 import socket
 from scapy.layers.dns import *

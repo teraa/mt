@@ -1,4 +1,4 @@
-import logging
+from loguru import logger as logging
 import socket
 from scapy.layers.inet import *
 from mt.tunnel import NetworkPipe
