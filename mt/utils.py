@@ -1,7 +1,8 @@
 import errno
-from loguru import logger as logging
 import signal
 import sys
+
+from loguru import logger as logging
 
 
 def _handler(sig, frame):

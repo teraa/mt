@@ -1,10 +1,11 @@
-from loguru import logger as logging
 import socket
+
+from loguru import logger as logging
 from scapy.layers.inet import *
+
+from mt.clients.base import Base
 from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
-from mt.clients.base import Base
-
 
 Address = tuple[str, int]
 

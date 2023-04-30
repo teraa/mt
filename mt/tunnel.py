@@ -1,7 +1,10 @@
 import threading
-from scapy.layers.inet import IP
 from queue import Queue
+
+from scapy.layers.inet import IP
+
 from mt.clients.base import Base
+
 
 class NetworkPipe(object):
     def __init__(self) -> None:

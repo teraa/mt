@@ -1,7 +1,5 @@
-import scapy.layers.inet as inet
-from loguru import logger as logging
-from mt.parser import create_parser
 from mt.clients import dns, icmp, tun, udp
+from mt.parser import create_parser
 from mt.tunnel import NetworkPipe, Tunnel
 from mt.utils import sighandler
 
