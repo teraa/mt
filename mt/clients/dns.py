@@ -93,19 +93,25 @@ class Server(Base):
 
         try:
             dns: DNS = DNS(data)
+            packet: IP | None
 
             if dns.ar:
                 rdata: bytes = dns.ar.rdata
                 packet = IP(rdata)
-                self._pipe.wire.put(packet)
             else:
-                logging.debug('Ping')
-                self._pipe.virt.put(None)
+                packet = None
 
             if not self._connected:
                 self._sock.connect(addr)
                 logging.info(f'Client connected: {addr}')
                 self._connected = True
+            
+            if packet:
+                self._pipe.wire.put(packet)
+            else:
+                logging.debug('Ping')
+                self._pipe.virt.put(None)
+
 
         except Exception as e:
             logging.warn(f'Error unpacking payload: {str(e)}')
