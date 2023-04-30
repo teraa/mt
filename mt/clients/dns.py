@@ -28,7 +28,7 @@ class Client(Base):
         self._sock.close()
 
     @socket_guard
-    def _read(self):
+    def read(self):
         data = self._sock.recv(65535)
 
         try:
@@ -49,7 +49,7 @@ class Client(Base):
         return True
 
     @socket_guard
-    def _write(self):
+    def write(self):
 
         qd = DNSQR(qname=self._domain, qtype='A')
         timeout = False
@@ -90,7 +90,7 @@ class Server(Base):
         self._sock.close()
 
     @socket_guard
-    def _read(self):
+    def read(self):
         data, addr = self._sock.recvfrom(65535)
 
         try:
@@ -121,7 +121,7 @@ class Server(Base):
         return True
 
     @socket_guard
-    def _write(self):
+    def write(self):
         packet = self._pipe.virt.get()
 
         if not self._connected:

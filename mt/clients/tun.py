@@ -42,7 +42,7 @@ class Client(Base):
         return tun_guard
 
     @tun_guard
-    def _read(self):
+    def read(self):
         data = self._tun.read(self._tun.mtu)
         packet = IP(data)
 
@@ -62,7 +62,7 @@ class Client(Base):
         self._pipe.virt.put(packet)
 
     @tun_guard
-    def _write(self):
+    def write(self):
         packet = self._pipe.wire.get()
 
         self._tun.write(raw(packet))

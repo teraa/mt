@@ -12,15 +12,15 @@ class Base(object):
         raise NotImplementedError()
 
     def reader(self):
-        while self._read():
+        while self.read():
             pass
 
     def writer(self):
-        while self._write():
+        while self.write():
             pass
 
-    def _read(self) -> bool:
+    def read(self) -> bool:
         raise NotImplementedError()
 
-    def _write(self) -> bool:
+    def write(self) -> bool:
         raise NotImplementedError()

@@ -32,7 +32,7 @@ class Client(Base):
         self._sock.close()
 
     @socket_guard
-    def _read(self):
+    def read(self):
         data, addr = self._sock.recvfrom(65535)
         ether = Ether(data)
 
@@ -60,7 +60,7 @@ class Client(Base):
         return True
 
     @socket_guard
-    def _write(self):
+    def write(self):
         packet = self._pipe.virt.get()
         frame: Ether = Ether()/IP(dst=self._remote)/ICMP(type=ICMP_TYPE)/raw(packet)
         self._sock.sendto(raw(frame), self._address)
