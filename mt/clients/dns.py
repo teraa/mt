@@ -4,14 +4,14 @@ from queue import Empty
 from loguru import logger as logging
 from scapy.layers.dns import *
 
-from mt.clients.base import Base
+from mt.clients.base import BaseClient
 from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
 
 Address = tuple[str, int]
 
 
-class Client(Base):
+class DnsClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, server_addr: Address, domain: str, keepalive: float) -> None:
         super().__init__(pipe)
 
@@ -71,7 +71,7 @@ class Client(Base):
         return True
 
 
-class Server(Base):
+class DnsServer(BaseClient):
     def __init__(self, pipe: NetworkPipe, listen_addr: Address, domain: str) -> None:
         super().__init__(pipe)
 

@@ -3,7 +3,7 @@ from queue import Queue
 
 from scapy.layers.inet import IP
 
-from mt.clients.base import Base
+from mt.clients.base import BaseClient
 
 
 class NetworkPipe(object):
@@ -12,7 +12,7 @@ class NetworkPipe(object):
         self.wire = Queue[IP]()
 
 class Tunnel(object):
-    def __init__(self, client1: Base, client2: Base):
+    def __init__(self, client1: BaseClient, client2: BaseClient):
         self.client1 = client1
         self.client2 = client2
 

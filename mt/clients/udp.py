@@ -3,14 +3,14 @@ import socket
 from loguru import logger as logging
 from scapy.layers.inet import *
 
-from mt.clients.base import Base
+from mt.clients.base import BaseClient
 from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
 
 Address = tuple[str, int]
 
 
-class Client(Base):
+class UdpClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, server_addr: Address) -> None:
         super().__init__(pipe)
 
@@ -44,7 +44,7 @@ class Client(Base):
         return True
 
 
-class Server(Base):
+class UdpServer(BaseClient):
     def __init__(self, pipe: NetworkPipe, listen_addr: Address) -> None:
         super().__init__(pipe)
 

@@ -4,11 +4,11 @@ import pytun
 from loguru import logger as logging
 from scapy.layers.inet import *
 
-from mt.clients.base import Base
+from mt.clients.base import BaseClient
 from mt.tunnel import NetworkPipe
 
 
-class Client(Base):
+class TunClient(BaseClient):
 
     def __init__(self, pipe: NetworkPipe, interface: str, address: str, netmask: str, mtu: int):
         super().__init__(pipe)

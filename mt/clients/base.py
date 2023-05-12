@@ -1,7 +1,7 @@
 from mt.tunnel import NetworkPipe
 
 
-class Base(object):
+class BaseClient(object):
     def __init__(self, pipe: NetworkPipe) -> None:
         self._pipe = pipe
 

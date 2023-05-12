@@ -3,7 +3,7 @@ import socket
 from loguru import logger as logging
 from scapy.layers.inet import *
 
-from mt.clients.base import Base
+from mt.clients.base import BaseClient
 from mt.tunnel import NetworkPipe
 from mt.utils import socket_guard
 
@@ -14,7 +14,7 @@ ETHERTYPE = 0x0800
 # send(IP(dst='f1.lan')/ICMP(type=201)/IP(dst='f1.tun')/ICMP())
 
 
-class Client(Base):
+class IcmpClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, interface: str, remote: Address) -> None:
         super().__init__(pipe)
 
