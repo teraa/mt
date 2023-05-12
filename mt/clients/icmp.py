@@ -16,8 +16,7 @@ ETHERTYPE = 0x0800
 
 class Client(Base):
     def __init__(self, pipe: NetworkPipe, interface: str, remote: Address) -> None:
-        super().__init__()
-        self._pipe = pipe
+        super().__init__(pipe)
 
         self._address = (interface, ETHERTYPE)
         self._remote = remote

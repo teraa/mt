@@ -13,8 +13,7 @@ Address = tuple[str, int]
 
 class Client(Base):
     def __init__(self, pipe: NetworkPipe, server_addr: Address, domain: str, keepalive: float) -> None:
-        super().__init__()
-        self._pipe = pipe
+        super().__init__(pipe)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -74,8 +73,7 @@ class Client(Base):
 
 class Server(Base):
     def __init__(self, pipe: NetworkPipe, listen_addr: Address, domain: str) -> None:
-        super().__init__()
-        self._pipe = pipe
+        super().__init__(pipe)
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 

@@ -11,8 +11,7 @@ from mt.tunnel import NetworkPipe
 class Client(Base):
 
     def __init__(self, pipe: NetworkPipe, interface: str, address: str, netmask: str, mtu: int):
-        super().__init__()
-        self._pipe = pipe
+        super().__init__(pipe)
 
         tun = pytun.TunTapDevice(name=interface, flags=pytun.IFF_TUN | pytun.IFF_NO_PI)
         tun.addr = address
