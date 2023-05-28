@@ -90,6 +90,7 @@ ip route add ${server_ip}/32 via ${gateway} dev ${interface}
 
 ```sh
 iptables -A FORWARD -i mt -j ACCEPT
+iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
 ```
 
 #### Enable IP forwarding
