@@ -1,3 +1,4 @@
+mode,client,server
 udp,100,100
 dns,100,94.9
 icmp,100,89.4
