@@ -5,4 +5,4 @@ test -d .venv || pushd ..
 . .venv/bin/activate
 
 # DNS server
-python -m mt --taddr 10.20.0.2 dnss
+python -m mt --taddr 10.20.0.2 udps
