@@ -2,8 +2,8 @@
 
 set -e
 
-echo 'name,send,recv'
+echo 'mode,send,recv'
 for file in *.json; do
-    name=$(cut -d. -f1 <<< $file)
-    jq ".end | [.sum_sent, .sum_received] | [\"$name\", .[].bits_per_second] | @csv" -r $file
+    mode=$(cut -d. -f1 <<< $file)
+    jq ".end | [.sum_sent, .sum_received] | [\"$mode\", (.[].bits_per_second / 1000 | round)] | @csv" -r $file
 done
