@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+pushd ..
+. .venv/bin/activate
+
+# ICMP client B
+python -m mt --taddr 10.20.0.2 icmp --lif enp0s8 --addr 192.168.56.105

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+pushd ..
+. .venv/bin/activate
+
+# UDP server
+python -m mt --taddr 10.20.0.2 udps
