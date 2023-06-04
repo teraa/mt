@@ -40,9 +40,9 @@ See [USAGE.txt](USAGE.txt) for the list of all options
 
 ```sh
 # ICMP client A
-mt --taddr 10.20.0.1 icmp --lif enp0s8 --raddr 192.168.56.106
+mt --taddr 10.20.0.1 icmp --lif enp0s8 --addr 192.168.56.106
 # ICMP client B
-mt --taddr 10.20.0.2 icmp --lif enp0s8 --raddr 192.168.56.105
+mt --taddr 10.20.0.2 icmp --lif enp0s8 --addr 192.168.56.105
 
 # UDP client
 mt --taddr 10.20.0.1 udpc --addr 192.168.56.106
