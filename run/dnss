@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-pushd ..
+test -d .venv || pushd ..
 . .venv/bin/activate
 
 # UDP server
