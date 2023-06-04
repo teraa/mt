@@ -1,9 +1,9 @@
 mode,send,recv
 "direct-tcp",1765943,1764641
-"direct-udp",1049,1049
 "dnsc-tcp",5918,4343
-"dnsc-udp",1049,1048
 "icmp-tcp",4640,3227
-"icmp-udp",1048,1048
 "udpc-tcp",11695,9165
+"direct-udp",1049,1049
+"dnsc-udp",1049,1048
+"icmp-udp",1048,1048
 "udpc-udp",1048,1048
