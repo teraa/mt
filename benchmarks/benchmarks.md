@@ -16,7 +16,7 @@ iperf3 -c 10.20.0.2 -J > dnsc-tcp.json
 iperf3 -c 10.20.0.2 -J -u > dnsc-udp.json
 
 # ICMP
-mt --taddr 10.20.0.1 icmp --lif enp0s8 --raddr 192.168.56.106
+mt --taddr 10.20.0.1 icmp --lif enp0s8 --addr 192.168.56.106
 iperf3 -c 10.20.0.2 -J > icmpc-tcp.json
 iperf3 -c 10.20.0.2 -J -u > icmpc-udp.json
 ```
