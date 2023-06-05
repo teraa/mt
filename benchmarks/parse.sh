@@ -2,6 +2,8 @@
 
 set -e
 
+cd results
+
 echo 'mode,send,recv'
 
 for type in {tcp,udp}; do
