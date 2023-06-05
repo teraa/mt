@@ -1,9 +1,6 @@
-from mt.tunnel import NetworkPipe
-
-
 class BaseClient(object):
-    def __init__(self, pipe: NetworkPipe) -> None:
-        self._pipe = pipe
+    def __init__(self) -> None:
+        pass
 
     def __enter__(self):
         return self

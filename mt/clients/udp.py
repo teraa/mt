@@ -12,7 +12,8 @@ Address = tuple[str, int]
 
 class UdpClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, server_addr: Address) -> None:
-        super().__init__(pipe)
+        super().__init__()
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -46,7 +47,8 @@ class UdpClient(BaseClient):
 
 class UdpServer(BaseClient):
     def __init__(self, pipe: NetworkPipe, listen_addr: Address) -> None:
-        super().__init__(pipe)
+        super().__init__()
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 

@@ -13,7 +13,8 @@ Address = tuple[str, int]
 
 class DnsClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, server_addr: Address, domain: str, keepalive: float) -> None:
-        super().__init__(pipe)
+        super().__init__()
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -73,7 +74,8 @@ class DnsClient(BaseClient):
 
 class DnsServer(BaseClient):
     def __init__(self, pipe: NetworkPipe, listen_addr: Address, domain: str) -> None:
-        super().__init__(pipe)
+        super().__init__()
+        self._pipe = pipe
 
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 

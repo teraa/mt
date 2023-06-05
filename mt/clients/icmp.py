@@ -16,7 +16,8 @@ ETHERTYPE = 0x0800
 
 class IcmpClient(BaseClient):
     def __init__(self, pipe: NetworkPipe, interface: str, remote: Address) -> None:
-        super().__init__(pipe)
+        super().__init__()
+        self._pipe = pipe
 
         self._address = (interface, ETHERTYPE)
         self._remote = remote
