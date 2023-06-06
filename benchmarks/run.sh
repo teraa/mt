@@ -33,7 +33,7 @@ for mt_opt in "${mt_opts[@]}"; do
             file="benchmarks/results/$mode-$traffic"
 
             if [[ "$traffic" == "udp" ]]; then
-                iperf_opt="$iperf_opt -u"
+                iperf_opt="$iperf_opt -ub0"
             fi
 
             if [[ "$direction" == "reverse" ]]; then
