@@ -40,6 +40,7 @@ mt --taddr 10.20.0.2 icmp --lif enp0s8 --addr 192.168.56.105
 ```
 
 Show results
+
 ```sh
 jq '.end | [.sum_sent, .sum_received] | [.[].bits_per_second] | {send: .[0], recv: .[1]}' results.json
 ```
