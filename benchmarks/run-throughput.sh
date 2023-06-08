@@ -11,6 +11,8 @@ test -d .venv || pushd ..
 : ${delay:=5}
 : ${duration:=60}
 
+echo "$taddr@$lif to $traddr ($raddr)"
+
 mt_opts=(
     "--taddr $taddr udpc --addr $raddr"
     "--taddr $taddr dnsc --addr $raddr"
@@ -30,7 +32,7 @@ for mt_opt in "${mt_opts[@]}"; do
         for direction in {normal,reverse}; do
             
             iperf_opt="-c $traddr -t $duration"
-            file="benchmarks/results/$mode-$traffic"
+            file="benchmarks/throughput/$mode-$traffic"
 
             if [[ "$traffic" == "udp" ]]; then
                 iperf_opt="$iperf_opt -ub0"
