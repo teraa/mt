@@ -33,7 +33,7 @@ class TunClient(BaseClient):
                 return True
 
             except pytun.Error as e:
-                if e[0] == errno.EINTR:
+                if e.errno == errno.EINTR:
                     return True
 
                 raise
@@ -64,6 +64,12 @@ class TunClient(BaseClient):
     def write(self):
         packet = self._pipe.wire.get()
 
-        self._tun.write(raw(packet))
-        logging.debug(packet)
+        try:
+            self._tun.write(raw(packet))
+            logging.debug(packet)
+
+        except pytun.Error as e:
+            if e.errno == errno.EINVAL:
+                logging.warning(f'Received invalid packet: {packet}')
+
         self._pipe.wire.task_done()
