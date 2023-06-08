@@ -4,12 +4,12 @@ set -e
 test -d .venv || pushd ..
 . .venv/bin/activate
 
-lif=enp0s8
-taddr=10.20.0.1
-traddr=10.20.0.2
-raddr=192.168.56.106
-delay=5
-duration=60
+: ${lif:=enp0s8}
+: ${taddr:=10.20.0.1}
+: ${traddr:=10.20.0.2}
+: ${raddr:=192.168.56.106}
+: ${delay:=5}
+: ${duration:=60}
 
 mt_opts=(
     "--taddr $taddr udpc --addr $raddr"
