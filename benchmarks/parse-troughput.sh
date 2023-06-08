@@ -2,7 +2,7 @@
 
 set -e
 
-cd troughput/
+cd throughput/
 
 echo 'mode,send,recv'
 
