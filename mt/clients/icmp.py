@@ -53,7 +53,7 @@ class IcmpClient(BaseClient):
         try:
             inner_ip: IP = IP(inner_ip_raw)
         except Exception as e:
-            logging.warn(f'Error unpacking ICMP payload: {str(e)}')
+            logging.warning(f'Error unpacking ICMP payload: {str(e)}')
             return True
 
         self._pipe.wire.put(inner_ip)

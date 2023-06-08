@@ -30,7 +30,7 @@ class UdpClient(BaseClient):
         try:
             packet: IP = IP(data)
         except Exception as e:
-            logging.warn(f'Error unpacking payload: {str(e)}')
+            logging.warning(f'Error unpacking payload: {str(e)}')
             return True
 
         self._pipe.wire.put(packet)
@@ -73,7 +73,7 @@ class UdpServer(BaseClient):
                 self._connected = True
 
         except Exception as e:
-            logging.warn(f'Error unpacking payload: {str(e)}')
+            logging.warning(f'Error unpacking payload: {str(e)}')
             return True
 
         self._pipe.wire.put(packet)
@@ -84,7 +84,7 @@ class UdpServer(BaseClient):
         packet = self._pipe.virt.get()
 
         if not self._connected:
-            logging.warn(f'Dropping packed because not connected')
+            logging.warning(f'Dropping packed because not connected')
             return True
 
         data = raw(packet)

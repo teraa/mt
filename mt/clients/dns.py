@@ -42,7 +42,7 @@ class DnsClient(BaseClient):
             packet: IP = IP(rdata)
 
         except Exception as e:
-            logging.warn(f'Error unpacking payload: {str(e)}')
+            logging.warning(f'Error unpacking payload: {str(e)}')
             return True
 
         self._pipe.wire.put(packet)
@@ -116,7 +116,7 @@ class DnsServer(BaseClient):
 
 
         except Exception as e:
-            logging.warn(f'Error unpacking payload: {str(e)}')
+            logging.warning(f'Error unpacking payload: {str(e)}')
 
         return True
 
@@ -125,7 +125,7 @@ class DnsServer(BaseClient):
         packet = self._pipe.virt.get()
 
         if not self._connected:
-            logging.warn(f'Dropping packed because not connected')
+            logging.warning(f'Dropping packed because not connected')
             return True
 
         qd = DNSQR(qname=self._domain, qtype='A')
