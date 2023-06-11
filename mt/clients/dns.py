@@ -131,7 +131,7 @@ class DnsServer(BaseClient):
         qd = DNSQR(qname=self._domain, qtype='A')
 
         if packet:
-            an = DNSRR(rrname=qd.name, type=qd.qtype, rdata='0.0.0.0')
+            an = DNSRR(rrname=qd.qname, type=qd.qtype, rdata='0.0.0.0')
             ar = DNSRR(type='NULL', rdata=packet)
             dns = DNS(qr=1, qd=qd, an=an, ar=ar, arcount=1)
         else:
