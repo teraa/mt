@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-test -d .venv || pushd ..
-. .venv/bin/activate
-
-# UDP client
-python -m mt --taddr ${local_tun:-10.20.0.1} dnsc --addr ${remote:-192.168.56.106}

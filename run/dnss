@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-test -d .venv || pushd ..
-. .venv/bin/activate
-
-# UDP server
-python -m mt --taddr ${local_tun:-10.20.0.2} dnss
