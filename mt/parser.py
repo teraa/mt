@@ -4,7 +4,7 @@ import argparse
 def create_parser():
     parser = argparse.ArgumentParser('mt')
     parser.add_argument('--tif', default='mt', help='TUN interface name [%(default)s]', metavar='NAME')
-    parser.add_argument('--taddr', help='TUN address [%(default)s]')
+    parser.add_argument('--taddr', help='TUN address [%(default)s]', required=True)
     parser.add_argument('--tmask', default='255.255.255.0', help='TUN netmask [%(default)s]')
     parser.add_argument('--tmtu', default=1472, type=int, help='TUN MTU [%(default)s]')
 
@@ -15,7 +15,7 @@ def create_parser():
     server_parser.add_argument('--port', default=50142, type=int, help='listen port [%(default)s]')
 
     client_parser = argparse.ArgumentParser(add_help=False)
-    client_parser.add_argument('--addr', help='remote address [%(default)s]')
+    client_parser.add_argument('--addr', help='remote address [%(default)s]', required=True)
     client_parser.add_argument('--port', default=50142, type=int, help='remote port [%(default)s]')
 
     dns_parser = argparse.ArgumentParser(add_help=False)
@@ -32,5 +32,5 @@ def create_parser():
 
     icmp_parser = subparsers.add_parser('icmp', help='ICMP client')
     icmp_parser.add_argument('--lif', default='enp0s8', help='listen interface [%(default)s]')
-    icmp_parser.add_argument('--addr', help='remote address [%(default)s]')
+    icmp_parser.add_argument('--addr', help='remote address [%(default)s]', required=True)
     return parser
